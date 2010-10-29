@@ -1,0 +1,7 @@
+config TARGET_BOARD
+        string
+		default "ar71xx" if TARGET_ar71xx
+		default "brcm47xx" if TARGET_brcm47xx
+		default "unknown"
+
+

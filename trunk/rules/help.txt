@@ -1,0 +1,10 @@
+DebWrt Build Environment
+
+Available targets:
+
+menuconfig  : Create a DebWrt Configuration file (.config)
+defconfig   : Create a default DebWrt Configuration
+help        : This help
+
+use: make <target>
+
