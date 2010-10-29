@@ -1,0 +1,6 @@
+config DEBWRT_DEBIAN_RELEASE
+        string
+        default "sid" if DEBWRT_DEBIAN_RELEASE_SID
+        default "lenny" if DEBWRT_DEBIAN_RELEASE_LENNY
+        default "sid"
+
