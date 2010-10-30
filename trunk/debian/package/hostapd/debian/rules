@@ -1,0 +1,66 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+# Sample debian/rules that uses debhelper.
+# This file was originally written by Joey Hess and Craig Small.
+# As a special exception, when this file is copied by dh-make into a
+# dh-make output file, you may use that output file without restriction.
+# This special exception was added by Craig Small in version 0.37 of dh-make.
+
+# Uncomment this to turn on verbose mode.
+export DH_VERBOSE=1
+
+# These are used for cross-compiling and for saving the configure script
+# from having to guess our platform (since we know it already)
+DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+ifneq ($(DEB_HOST_GNU_TYPE),$(DEB_BUILD_GNU_TYPE))
+CROSS= --build $(DEB_BUILD_GNU_TYPE) --host $(DEB_HOST_GNU_TYPE)
+else
+CROSS= --build $(DEB_BUILD_GNU_TYPE)
+endif
+
+CC=$(DEB_HOST_GNU_TYPE)-gcc
+export CC
+
+# CFLAGS as suggested by hostapd Makefile
+CFLAGS = -MMD -O2 -Wall -g
+CFLAGS += -I../src
+CFLAGS += -I../src/utils
+
+# support madwifi
+CFLAGS += -I../../src/madwifi
+
+# Make sure DebWrt linux kernel headers are used ( emdebian contains somewhat older headers files )
+CFLAGS+=-I/usr/$(DEB_HOST_GNU_TYPE)/src/linux/include
+
+
+%:
+	dh $@ 
+
+build:
+	dh_testdir
+	dh_auto_configure
+
+	$(MAKE) -C src/hostapd
+
+	dh_auto_test
+
+override_dh_auto_install:
+	install -d debian/hostapd/usr/sbin
+	install -d debian/hostapd/etc/init.d
+	install -d debian/hostapd/etc/hostapd
+	install -d debian/hostapd/etc/default
+	install -o root -g root -m 755 src/hostapd/hostapd debian/hostapd/usr/sbin/hostapd
+	install -o root -g root -m 755 src/hostapd/hostapd_cli debian/hostapd/usr/sbin/hostapd_cli
+	install -o root -g root -m 644 debian/hostapd-nokey.conf debian/hostapd/etc/hostapd/hostapd-nokey.conf
+	install -o root -g root -m 644 debian/hostapd-wpa.conf debian/hostapd/etc/hostapd/hostapd-wpa.conf
+	install -o root -g root -m 644 debian/hostapd-wep.conf debian/hostapd/etc/hostapd/hostapd-wep.conf
+	install -o root -g root -m 644 debian/hostapd.default debian/hostapd/etc/default/hostapd
+	install -o root -g root -m 644 debian/hostapd.init debian/hostapd/etc/init.d/hostapd
+
+override_dh_installinit:
+	# do nothing, we want hostapd not to be started at system boot time, but from /etc/network/interfaces on demand
+
+override_dh_auto_clean:
+	$(MAKE) -C src/hostapd clean
+

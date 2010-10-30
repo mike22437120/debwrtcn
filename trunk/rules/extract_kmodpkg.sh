@@ -20,33 +20,31 @@ if [ ! -d "$tmpdir" ]; then $tmpdir is not a directory; exit 1; fi
 tardir=$tmpdir/.extractkmodpkg.$$
 mkdir -p $tardir
 
-# Extra from data.tar.gz only /lib
 n=`basename $kmodp`
 nn=${n/.ipk/}
-#echo -n "I: Extracting $nn..."
-#( cat $kmodp\
-#| gunzip \
-#| tar -C . -x -f - -O ./data.tar.gz \
-#| tar xzf - -C $tardir ./lib ) || true
+
+# Extra from data.tar.gz only /lib
 tar xzf $kmodp -C $tardir ./data.tar.gz
 tar xzf $tardir/data.tar.gz -C $tardir ./lib
-echo -n "I: Copy kernel modules(s) from $nn..."
+
+echo "I: Copy kernel modules(s) from $nn..."
 findc=0
 first=1
-for kmod in `find $tardir -type f -name "*.ko"`; do
+for kmod in `find $tardir -type f ! -name "data.tar.gz"`; do
    kmodf=`basename $kmod`
+
+   # Only copy kernel module files if they do not already exist!
    findc=$(find $droot -type f -name $kmodf | wc -l)
    if [ "$findc" -eq 0 ]; then
 	  tokmod=${kmod/$tardir/}
       todir=`dirname $droot/$tokmod`
 	  mkdir -p $todir
       cp -a $kmod $droot/$tokmod
-	  if [ "$first" = 1 ]; then echo; first=0; fi;
-	  echo "I:    - $kmodf"
+      echo "I:    - $kmodf (yes)"
+   else
+      echo "I:    - $kmodf (no)"
    fi
 done
-
-if [ "$findc" == 0 ]; then echo "I: done"; else echo "no"; fi
 
 rm -rf $tardir
 

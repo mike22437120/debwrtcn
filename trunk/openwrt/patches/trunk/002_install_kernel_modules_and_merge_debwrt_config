@@ -1,8 +1,11 @@
---- include/kernel-defaults.mk.org	2010-05-15 18:32:35.075275795 +0200
-+++ include/kernel-defaults.mk	2010-05-15 18:32:04.805270593 +0200
-@@ -98,7 +98,9 @@
+--- include/kernel-defaults.mk.org	2010-06-25 00:00:14.942838440 +0200
++++ include/kernel-defaults.mk	2010-06-24 23:58:56.272846235 +0200
+@@ -96,9 +96,11 @@
+ 	-$(_SINGLE)$(MAKE) $(KERNEL_MAKEOPTS) oldconfig prepare scripts
+ endef
  define Kernel/Configure/Default
- 	$(LINUX_CONFCMD) > $(LINUX_DIR)/.config.target
+-	$(LINUX_CONFCMD) > $(LINUX_DIR)/.config.target
++	$(LINUX_CONFCMD) > $(LINUX_DIR)/.config.target.default
  # copy CONFIG_KERNEL_* settings over to .config.target
 -	awk '/^(#[[:space:]]+)?CONFIG_KERNEL/{sub("CONFIG_KERNEL_","CONFIG_");print}' $(TOPDIR)/.config >> $(LINUX_DIR)/.config.target
 +	awk '/^(#[[:space:]]+)?CONFIG_KERNEL/{sub("CONFIG_KERNEL_","CONFIG_");print}' $(TOPDIR)/.config >> $(LINUX_DIR)/.config.target.default

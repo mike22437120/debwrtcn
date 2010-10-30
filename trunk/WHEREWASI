@@ -1,3 +1,0 @@
-20100516: 
-- Included target config.in from OpenWrt. In rules/debwrt.mk changed BOARD and SUB_BOARD to use these new values. Todo: determine how to set target image name(s). Check if all some old BOARD/SUB_BOARD/TARGET related config vars are not referenced to.
-- Fixed problem with patch 002_install_kernel_modules_and_merge_debwrt_config

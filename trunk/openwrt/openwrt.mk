@@ -21,13 +21,14 @@ openwrt/all: openwrt/build
 	$(MAKE) -C $(TOPDIR) openwrt/deliver
 
 openwrt/build: openwrt/prepare
-
-openwrt/prepare: openwrt/checkout openwrt/patch openwrt/merge-config openwrt/download-link
 ifeq ("$(origin V)", "command line")
 	$(SCRIPT_CLEAN_EXEC) $(MAKE) -C $(OPENWRT_BUILD_DIR) V=$(V)
 else
 	$(SCRIPT_CLEAN_EXEC) $(MAKE) -C $(OPENWRT_BUILD_DIR)
 endif
+
+openwrt/prepare: .config openwrt/checkout openwrt/patch openwrt/merge-config openwrt/download-link
+	touch $@
 
 openwrt/merge-config: $(TMP_DIR) openwrt/checkout openwrt/patch
 	@# Copy default OpenWrt settings
@@ -50,8 +51,10 @@ openwrt/patch: openwrt/checkout
 	patch -d $(OPENWRT_BUILD_DIR) -p 0 -N < $(PATCHES_DIR_OPENWRT)/001_disable_all_openwrt_packages
 ifeq ($(IS_OPENWRT_TRUNK),y)
 	patch -d $(OPENWRT_BUILD_DIR) -p 0 -N < $(PATCHES_DIR_OPENWRT)/trunk/002_install_kernel_modules_and_merge_debwrt_config
+	patch -d $(OPENWRT_BUILD_DIR) -p 0 -N < $(PATCHES_DIR_OPENWRT)/trunk/005_make_empty_rootfs
 else ifeq ($(IS_OPENWRT_BACKFIRE),y)
 	patch -d $(OPENWRT_BUILD_DIR) -p 0 -N < $(PATCHES_DIR_OPENWRT)/backfire/002_install_kernel_modules_and_merge_debwrt_config
+	patch -d $(OPENWRT_BUILD_DIR) -p 0 -N < $(PATCHES_DIR_OPENWRT)/backfire/005_make_empty_rootfs
 endif
 	#patch -d $(OPENWRT_BUILD_DIR) -p 0 -N < $(PATCHES_DIR_OPENWRT)/003_set_kernel_version
 	patch -d $(OPENWRT_BUILD_DIR) -p 0 -N < $(PATCHES_DIR_OPENWRT)/004_save_environment_variables
@@ -68,6 +71,15 @@ else
 	cd $(OPENWRT_BUILD_DIR) && svn co -r $(OPENWRT_REVISION) svn://svn.openwrt.org/openwrt/trunk/ .
 endif
 	touch $@
+
+openwrt/update: openwrt/checkout
+ifeq ($(IS_OPENWRT_TRUNK),y)
+	cd $(OPENWRT_BUILD_DIR) && svn update svn://svn.openwrt.org/openwrt/trunk/ .
+else ifeq ($(IS_OPENWRT_BACKFIRE),y)
+	cd $(OPENWRT_BUILD_DIR) && svn update svn://svn.openwrt.org/openwrt/branches/backfire/ .
+else
+	cd $(OPENWRT_BUILD_DIR) && svn update -r $(OPENWRT_REVISION) svn://svn.openwrt.org/openwrt/trunk/ .
+endif
 
 openwrt/menuconfig: openwrt/prepare
 	$(SCRIPT_CLEAN_EXEC) $(MAKE) -C $(OPENWRT_BUILD_DIR) menuconfig

@@ -15,6 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+# Debuging make file
+#OLD_SHELL := $(SHELL)
+#SHELL = $(warning [$@ ($^) ($?)])$(OLD_SHELL)
+#
+# make --debug=basic
+
 TOPDIR:=${CURDIR}
 
 all: world
@@ -28,11 +34,11 @@ include openwrt/openwrt.mk
 include openwrt/openwrt-deliver.mk
 include debian/debian.mk
 
-world: .config openwrt/build
+world: .config openwrt/all debian/rootfs
+	@echo Make DebWrt completed
 	@echo REVISION=$$REVISION
 	@echo RELEASE=$$RELEASE
 	@echo DEBWRTVERSION=$$DEBWRTVERSION
-	@echo Make DebWrt
 
 update-targets: openwrt/prepare
 	cat $(OPENWRT_BUILD_DIR)/tmp/.config-target.in \
@@ -45,12 +51,17 @@ update-targets: openwrt/prepare
 	cat $(OPENWRT_BUILD_DIR)/target/Config.in | grep -v 'source "tmp/.config-target.in"' >$(TOPDIR)/config/archs.in
 
 board:
-	echo "Board " ${SUB_BOARD}
+	@echo "Board    :" ${BOARD}
+	@echo "Sub-Board:" ${SUB_BOARD}
+
+home:
+	echo "CONFIG_DEBIAN_BUILDENV_REPOSITORY=\"http://10.0.2.3:3142/ftp.debian.org/debian\"" >>$(TOPDIR)/.config
+	echo "CONFIG_EMDEBIAN_BUILDENV_REPOSITORY=\"http://10.0.2.3:3142/www.emdebian.org/debian\"" >>$(TOPDIR)/.config
 
 flash:
-	cd $(INSTALL_DIR) && $(SCRIPT_FLASH) "$(call qstrip,$(CONFIG_FLASH_IP))" "$(TARGET_IMAGE_NAME)" || echo
+	cd $(INSTALL_DIR) && $(SCRIPT_FLASH) "$(call qstrip,$(CONFIG_FLASH_IP))" "$(CONFIG_DEBWRT_TARGET_IMAGE_NAME_TRX)" || echo
 
-clean: config-clean openwrt/clean
+clean: config-clean openwrt/clean debian/packages/clean debian/buildenv/clean debian/roofs/clean
 	@rm -f .config .config.old
 
 FORCE: ;

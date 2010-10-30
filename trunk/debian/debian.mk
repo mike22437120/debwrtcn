@@ -17,3 +17,6 @@
 
 include $(TOPDIR)/debian/buildenv/debian.mk
 include $(TOPDIR)/debian/package/debian.mk
+include $(TOPDIR)/debian/rootfs/debian.mk
+
+debian/all: 

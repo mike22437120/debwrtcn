@@ -25,6 +25,11 @@ config/mconf/mconf:
 config/mconf/conf:
 	@$(MAKE) -s -C config/mconf conf
 
+# Create new config-target.in from OpenWrt's targets config generated file
+# note: include the select <target> lines, exlcude all other selects
+config/target:
+	LC_ALL=C cat $(OPENWRT_BUILD_DIR)/tmp/.config-target.in | awk '/select\W+[[:lower:]]/ { print $0 } /select.*HAS_SUBTARGETS/ { print $0 } ! /select/ { print $0 }' >$(TOPDIR)/config/config-target.in
+
 config-clean: FORCE
 	$(MAKE) -C config/mconf clean
 

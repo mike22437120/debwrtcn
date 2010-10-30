@@ -93,7 +93,7 @@ config OPENWRT_REVISION_TRUNK
         bool "trunk"
 
 config OPENWRT_REVISION_BACKFIRE
-        bool "backfire"
+        bool "backfire ( not tested recently )"
 
 endchoice
 
@@ -109,21 +109,21 @@ config DEBWRT_KERNEL_DEFAULT
         bool
 	prompt "Default" 
 
-config DEBWRT_KERNEL_2_6_32
-        bool
-	prompt "2.6.32" if OPENWRT_REVISION_TRUNK || OPENWRT_REVISION_R18829
-
-config DEBWRT_KERNEL_2_6_31
-        bool 
-	prompt "2.6.31" if OPENWRT_REVISION_TRUNK || OPENWRT_REVISION_R18829
-
-config DEBWRT_KERNEL_2_6_30
-        bool 
-	prompt "2.6.30" if OPENWRT_REVISION_TRUNK || OPENWRT_REVISION_R18829
-
-config DEBWRT_KERNEL_2_6_28
-        bool
-	prompt "2.6.28" if OPENWRT_REVISION_8_09
+#config DEBWRT_KERNEL_2_6_32
+#        bool
+#	prompt "2.6.32" if OPENWRT_REVISION_TRUNK || OPENWRT_REVISION_R18829
+#
+#config DEBWRT_KERNEL_2_6_31
+#        bool 
+#	prompt "2.6.31" if OPENWRT_REVISION_TRUNK || OPENWRT_REVISION_R18829
+#
+#config DEBWRT_KERNEL_2_6_30
+#        bool 
+#	prompt "2.6.30" if OPENWRT_REVISION_TRUNK || OPENWRT_REVISION_R18829
+#
+#config DEBWRT_KERNEL_2_6_28
+#        bool
+#	prompt "2.6.28" if OPENWRT_REVISION_8_09
 
 endchoice
 
@@ -187,6 +187,123 @@ config BLK_DEV_LOOP
 	help
 	  Saying Y here will allow you to use a regular file as a block device. I can't live without 
 	  this feature ;-)
+
+endmenu
+
+menu "IDE Configuration"
+
+#CONFIG_IDEPCI_PCIBUS_ORDER=y
+config IDEPCI_PCIBUS_ORDER
+    bool
+    default y
+
+#CONFIG_IDE_XFER_MODE=y
+config IDE_XFER_MODE
+    bool
+    default y
+
+#CONFIG_BLK_DEV_IDEDMA_SFF=y
+config BLK_DEV_IDEDMA_SFF
+    bool
+    default y
+
+#CONFIG_BLK_DEV_IDEPCI=y
+config BLK_DEV_IDEPCI
+    bool
+    default y
+
+#CONFIG_BLK_DEV_IDEDMA_PCI=y
+config BLK_DEV_IDEDMA_PCI
+    bool
+    default y
+
+#CONFIG_BLK_DEV_IDEDMA=y
+config BLK_DEV_IDEDMA
+    bool
+    default y
+
+# make kernel compile not stop:
+config IDE_GD_ATAPI
+	bool
+	default n
+
+#CONFIG_IDE=y
+config IDE
+    bool "ATA/ATAPI/MFM/RLL support (DEPRECATED)"
+    default y
+    ---help---
+      If you say Y here, your kernel will be able to manage ATA/(E)IDE and
+      ATAPI units. The most common cases are IDE hard drives and ATAPI
+      CD-ROM drives.
+
+      This subsystem is currently in maintenance mode with only bug fix
+      changes applied. Users of ATA hardware are encouraged to migrate to
+      the newer ATA subsystem ("Serial ATA (prod) and Parallel ATA
+      (experimental) drivers") which is more actively maintained.
+
+      To compile this driver as a module, choose M here: the
+      module will be called ide-core.
+
+      For further information, please read <file:Documentation/ide/ide.txt>.
+
+      If unsure, say N.
+
+#CONFIG_IDE_GD=y
+config IDE_GD
+    tristate "generic ATA/ATAPI disk support"
+    default y
+    help
+      Support for ATA/ATAPI disks (including ATAPI floppy drives).
+
+      To compile this driver as a module, choose M here.
+      The module will be called ide-gd_mod.
+
+      If unsure, say Y.
+
+#CONFIG_IDE_GD_ATA=y
+config IDE_GD_ATA
+    bool "ATA disk support"
+    depends on IDE_GD
+    default y
+    help
+      This will include support for ATA hard disks.
+
+      If unsure, say Y.
+
+#CONFIG_IDE_PROC_FS=y
+config IDE_PROC_FS
+    bool "legacy /proc/ide/ support"
+    depends on IDE
+    default y
+    help
+      This option enables support for the various files in
+      /proc/ide.  In Linux 2.6 this has been superseded by
+      files in sysfs but many legacy applications rely on this.
+
+      If unsure say Y.
+
+#CONFIG_BLK_DEV_PDC202XX_OLD=y
+config BLK_DEV_PDC202XX_OLD
+    tristate "PROMISE PDC202{46|62|65|67} support"
+    select BLK_DEV_IDEDMA_PCI
+    default y
+    help
+      Promise Ultra33 or PDC20246
+      Promise Ultra66 or PDC20262
+      Promise Ultra100 or PDC20265/PDC20267/PDC20268
+
+      This driver adds up to 4 more EIDE devices sharing a single
+      interrupt. This add-on card is a bootable PCI UDMA controller. Since
+      multiple cards can be installed and there are BIOS ROM problems that
+      happen if the BIOS revisions of all installed cards (three-max) do
+      not match, the driver attempts to do dynamic tuning of the chipset
+      at boot-time for max-speed.  Ultra33 BIOS 1.25 or newer is required
+      for more than one card.
+
+      Please read the comments at the top of
+      <file:drivers/ide/pci/pdc202xx_old.c>.
+
+      If unsure, say N.
 
 endmenu
 
@@ -265,7 +382,7 @@ config USB
 
 config USB_DEBUG
         bool "USB verbose debug messages"
-	default y
+	default n
         depends on USB
         help
           Say Y here if you want the USB core & hub drivers to produce a bunch
@@ -354,7 +471,7 @@ config USB_MON
  
 #CONFIG_USB_EHCI_HCD=y
 config USB_EHCI_HCD
-        tristate "EHCI HCD (USB 2.0) support"
+    bool "EHCI HCD (USB 2.0) support"
 	depends on USB
 	default y
         ---help---
@@ -376,6 +493,42 @@ config USB_EHCI_HCD
           To compile this driver as a module, choose M here: the
           module will be called ehci-hcd. 
 
+# +CONFIG_USB_OHCI_HCD=y
+config USB_OHCI_HCD
+    bool "OHCI HCD support"
+    depends on USB
+	default y
+    ---help---
+      The Open Host Controller Interface (OHCI) is a standard for accessing
+      USB 1.1 host controller hardware.  It does more in hardware than Intel's
+      UHCI specification.  If your USB host controller follows the OHCI spec,
+      say Y.  On most non-x86 systems, and on x86 hardware that's not using a
+      USB controller from Intel or VIA, this is appropriate.  If your host
+      controller doesn't use PCI, this is probably appropriate.  For a PCI
+      based system where you're not sure, the "lspci -v" entry will list the
+      right "prog-if" for your USB controller(s):  EHCI, OHCI, or UHCI.
+
+      To compile this driver as a module, choose M here: the
+      module will be called ohci-hcd.
+
+# +CONFIG_USB_UHCI_HCD=y
+config USB_UHCI_HCD
+    bool "UHCI HCD (most Intel and VIA) support"
+    depends on USB
+	default y
+    ---help---
+      The Universal Host Controller Interface is a standard by Intel for
+      accessing the USB hardware in the PC (which is also called the USB
+      host controller). If your USB host controller conforms to this
+      standard, you may want to say Y, but see below. All recent boards
+      with Intel PCI chipsets (like intel 430TX, 440FX, 440LX, 440BX,
+      i810, i820) conform to this standard. Also all VIA PCI chipsets
+      (like VIA VP2, VP3, MVP3, Apollo Pro, Apollo Pro II or Apollo Pro
+      133). If unsure, say Y.
+
+      To compile this driver as a module, choose M here: the
+      module will be called uhci-hcd.
+
 #CONFIG_USB_EHCI_AR71XX=y
 config USB_EHCI_AR71XX
         bool "USB EHCI support for AR71xx"
@@ -384,6 +537,14 @@ config USB_EHCI_AR71XX
         help
           Support for Atheros AR71xx built-in EHCI controller
 
+#CONFIG_USB_OHCI_AR71XX=y
+config USB_OHCI_AR71XX
+        bool "USB OHCI support for Atheros AR71xx"
+        depends on USB_OHCI_HCD
+        default y
+        help
+          Support for Atheros AR71xx built-in OHCI controller
+ 
 config USB_EHCI_ROOT_HUB_TT
         bool "Root Hub Transaction Translators"
         depends on USB_EHCI_HCD
@@ -396,32 +557,6 @@ config USB_EHCI_ROOT_HUB_TT
 
           This supports the EHCI implementation that's originally
           from ARC, and has since changed hands a few times.
- 
-config USB_OHCI_HCD
-        tristate "OHCI HCD support"
-	depends on USB
-	default n if TARGET_brcm47xx
-	default y
-        ---help---
-          The Open Host Controller Interface (OHCI) is a standard for accessing
-          USB 1.1 host controller hardware.  It does more in hardware than Intel's
-          UHCI specification.  If your USB host controller follows the OHCI spec,
-          say Y.  On most non-x86 systems, and on x86 hardware that's not using a
-          USB controller from Intel or VIA, this is appropriate.  If your host
-          controller doesn't use PCI, this is probably appropriate.  For a PCI
-          based system where you're not sure, the "lspci -v" entry will list the
-          right "prog-if" for your USB controller(s):  EHCI, OHCI, or UHCI.
-
-          To compile this driver as a module, choose M here: the
-          module will be called ohci-hcd.
-
-#CONFIG_USB_OHCI_AR71XX=y
-config USB_OHCI_AR71XX
-        bool "USB OHCI support for Atheros AR71xx"
-        depends on USB_OHCI_HCD
-        default y
-        help
-          Support for Atheros AR71xx built-in OHCI controller
  
 #CONFIG_USB_STORAGE=y
 config USB_STORAGE
@@ -593,30 +728,116 @@ config PACKAGE_kmod-madwifi
      This package contains a driver for Atheros 802.11a/b/g chipsets.
      http://madwifi-project.org/
 
-config PACKAGE_kmod-b43
+menuconfig PACKAGE_kmod-b43
 	bool "kmod-b43.................................. Broadcom 43xx wireless support"
 	default y
-    help
-      Kernel module for Broadcom 43xx wireless support (mac80211 stack) new
-      http://linuxwireless.org/en/users/Drivers/b43
+        help
+          Kernel module for Broadcom 43xx wireless support (mac80211 stack) new
+          http://linuxwireless.org/en/users/Drivers/b43
+
+	menu "Configuration"
+		depends on PACKAGE_kmod-b43
+
+	choice
+		prompt "b43 firmware version"
+		default B43_EXPERIMENTAL
+		help
+		  This option allows you to select the version of the b43 firmware. DebWrt note: 
+                  Over the years this experimental version showed better results then the stable
+                  version
+
+	config B43_STABLE
+		bool "4.150.10.5 (stable)"
+		help
+		  Stable firmware for BCM43xx devices.
+
+		  If unsure, select this.
+
+	config B43_EXPERIMENTAL
+		bool "4.178.10.4 (experimental)"
+		help
+		  Experimental firmware for BCM43xx devices.
+
+		  This firmware is not tested as much as the "stable" firmware.
+
+		  If unsure, select the "stable" firmware.
+
+	config B43_OPENFIRMWARE
+		bool "Open FirmWare for WiFi networks"
+		help
+		  Opensource firmware for BCM43xx devices.
+
+		  Do _not_ select this, unless you know what you are doing.
+		  The Opensource firmware is not suitable for embedded devices, yet.
+		  It does not support QoS, which is bad for AccessPoints.
+		  It does not support hardware crypto acceleration, which is a showstopper
+		  for embedded devices with low CPU resources.
+
+		  If unsure, select the "stable" firmware.
+
+	endchoice
+
+	config B43_FW_SQUASH
+		bool "Remove unnecessary firmware files"
+		depends on !B43_OPENFIRMWARE
+		default n
+		help
+		  This options allows you to remove unnecessary b43 firmware files
+		  from the final rootfs image. This can reduce the rootfs size by
+		  up to 200k.
+
+		  If unsure, say Y.
+
+	config B43_FW_SQUASH_COREREVS
+		string "Core revisions to include"
+		depends on B43_FW_SQUASH
+		default "5,6,7,8,9,10,13,14,15"
+		help
+		  This is a comma seperated list of core revision numbers.
+
+		  Example (keep files for rev5 only):
+		    5
+
+		  Example (keep files for rev5 and rev11):
+		    5,11
+
+	config B43_FW_SQUASH_PHYTYPES
+		string "PHY types to include"
+		depends on B43_FW_SQUASH
+		default "G,LP"
+		help
+		  This is a comma seperated list of PHY types:
+		    A  => A-PHY
+		    AG => Dual A-PHY G-PHY
+		    G  => G-PHY
+		    LP => LP-PHY
+		    N  => N-PHY
+
+		  Example (keep files for G-PHY only):
+		    G
+
+		  Example (keep files for G-PHY and N-PHY):
+		    G,N
+
+	endmenu
 
 config PACKAGE_kmod-b43legacy
 	bool "kmod-b43legacy..................... Broadcom 43xx-legacy wireless support"
-	default n
+	default y
     help
       Kernel module for Broadcom 43xx-legacy wireless support (mac80211 stack) new
       http://linuxwireless.org/en/users/Drivers/b43
 
 config PACKAGE_kmod-rt2500-pci
 	bool "kmod-rt2500-pci............. Ralink Drivers for RT2x00 cards (RT2500 PCI)"
-	default n 
+	default y 
 	help
       Ralink Drivers for RT2x00 cards (RT2500 PCI)
       http://linuxwireless.org/
 
 config PACKAGE_kmod-rt2500-usb
 	bool "kmod-rt2500-usb............. Ralink Drivers for RT2x00 cards (RT2500 USB)"
-	default n
+	default y
 	help
 	Ralink Drivers for RT2x00 cards (RT2500 USB)
 	http://linuxwireless.org/
@@ -625,10 +846,31 @@ endmenu
  
 endmenu
 
+config NETCONSOLE
+        bool "Network console logging support (EXPERIMENTAL)"
+	default y
+        ---help---
+        If you want to log kernel messages over the network, enable this.
+        See <file:Documentation/networking/netconsole.txt> for details.
+
+config NETCONSOLE_DYNAMIC
+	bool
+	default n
+
+config NETPOLL_TRAP
+	bool
+	default n
+
+config CMDLINE_BOOL
+	bool
+	default y
+
 #CONFIG_CMDLINE="root=/dev/sda1 init=/sbin/init rootdelay=10 noinitrd console=ttyS0,115200"
+# default "root=/dev/sda1 init=/sbin/init rootdelay=15 noinitrd console=ttyS0,115200"
+# default "root=/dev/sda1 init=/sbin/init rootdelay=15 noinitrd console=ttyS0,115200 netconsole=6665@10.0.2.1/eth0,6666@10.0.2.2"
 config CMDLINE
         string "Default kernel command line"
-        default "root=/dev/sda1 init=/sbin/init rootdelay=15 noinitrd console=ttyS0,115200"
+        default "root=/dev/sda1 init=/sbin/init rootdelay=15 noinitrd console=ttyS0,115200 netconsole=6665@192.168.1.1/eth0,6666@192.168.1.2/"
         help
 	  Override OpenWrt default kernel command line. Tell the kernel to boot from /dev/sda1,
 	  an USB storage device. Rootdelay is specified, to give the USB storage/SCSI driver
@@ -640,14 +882,21 @@ menu "Debian Cross-Compile Environment Configuration"
 	
 config DEBIAN_BUILDENV_REPOSITORY
 	string "Debian Repository"
-	default "http://10.0.2.2:3142/ftp.debian.org/debian"
+	default "http://ftp.debian.org/debian"
+	help
+	  Specify the Debian Repository used to set up de Debian Cross-Compile chroot
+	  environment and used to install Debian chroot for the target architecture.
+
+config EMDEBIAN_BUILDENV_REPOSITORY
+	string "Emdebian Repository"
+	default "http://www.emdebian.org/debian"
 	help
 	  Specify the Debian Repository used to set up de Debian Cross-Compile chroot
 	  environment and used to install Debian chroot for the target architecture.
 
 config DEBIAN_BUILDENV_INCLUDE_PACKAGES
 	string "Additional packages"
-	default "file,less,strace"
+	default "file,less,strace,sudo"
 	help
 	  Specify a comma seperated list of additional packages to install in the
 	  Debian cross-compile environment. The cross compile environment is a
@@ -655,18 +904,48 @@ config DEBIAN_BUILDENV_INCLUDE_PACKAGES
 
 config DEBIAN_BUILDENV_QEMU_VERSION
 	string "Qemu version"
-	default "0.12.2"
+	default "0.12.4"
 	help
 	  At least 0.12.2 is needed for mips targets.
 
 endmenu
 
 menu "Debian Root Filesystem Configuration"
+
+choice
+    prompt "DebWrt Debian Release"
+	default DEBWRT_DEBIAN_RELEASE_SQUEEZE
+	help
+	  Select the the Debian release for the root filesystem
+
+config DEBWRT_DEBIAN_RELEASE_SID
+    bool
+    prompt "Sid"
+
+config DEBWRT_DEBIAN_RELEASE_SQUEEZE
+    bool
+    prompt "Squeeze"
+
+config DEBWRT_DEBIAN_RELEASE_LENNY
+    bool
+    prompt "Lenny"
+
+endchoice
+
+config DEBIAN_ROOTFS_INCLUDE_PACKAGES
+	string "Additional packages"
+	default "dash,openssh-server,openssh-client,vim-tiny,telnetd,telnet,bzip2,bridge-utils,tcpdump,vlan,iproute,udev,dnsmasq,ntpdate,ntp,iperf,screen,less,usbutils,pciutils,ebtables,strace,host,module-init-tools,file,bwm-ng,netcat,ethtool,lsof,sdparm,hdparm,wireless-tools,psmisc"
+	help
+	  Specify a comma seperated list of additional packages to install in the
+	  Debian rootfs. 
+
 endmenu
+
+source "config/debian_release.in"
 
 config OPENWRT_DOWNLOAD_DIR
 	string "Alternate OpenWrt download directory"
-	default "../../../dl"
+	default "../../../../dl"
 	help
 	  When checking out and building multiple revisions of OpenWrt it comes in handy
 	  to not download all required external sources over and over again, but save them
