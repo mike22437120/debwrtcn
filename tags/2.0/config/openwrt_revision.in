@@ -1,0 +1,6 @@
+config OPENWRT_REVISION
+        string
+		default "trunk" if OPENWRT_REVISION_TRUNK
+		default "backfire" if OPENWRT_REVISION_BACKFIRE
+		default "unknown"
+

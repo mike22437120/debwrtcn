@@ -1,0 +1,52 @@
+#! /bin/sh
+#
+
+# Mount root read-write
+/bin/mount -n -o remount,rw /dev/root /
+
+# Mount proc - why not? :-)
+/bin/mount -t proc none /proc
+
+# Setup the network
+/sbin/ifconfig eth0 192.168.1.1 netmask 255.255.255.0 up
+/sbin/ifconfig eth0:1 192.168.1.20 netmask 255.255.255.0 up
+
+# Mount devpts to allow telnet and ssh logins
+/bin/mkdir -p /dev/pts/
+/bin/mount -t devpts none /dev/pts/
+
+# Run telnetd in background
+while true; do /usr/sbin/in.telnetd -debug 23; /bin/sleep 1; done&
+
+# Run SSHd in background - nice scp-ing
+/usr/sbin/sshd -D &
+
+# Setting hostnams
+/bin/hostname `cat /etc/hostname`
+
+# Run bash instead of normal boot procedure
+/bin/echo
+/bin/echo "Welcome to the DebWrt post installation!"
+/bin/echo
+/bin/echo "Press ctrl-d for normal boot. Use vim.tiny to edit files."
+/bin/echo
+/bin/echo "Note that both telnetd and sshd are running on: 192.168.1.1 and on 192.168.1.20."
+/bin/echo
+/bin/echo "Second stage install instructions:"
+/bin/echo
+/bin/echo "- /debootstrap/debootstrap --second-stage"
+/bin/echo "- rm -rf /var/cache/apt/archives"
+/bin/echo "- mkdir -p /var/cache/apt/archives/partial"
+/bin/echo "- echo \"deb http://ftp.debian.org/debian squeeze main\" >>/etc/apt/sources.list"
+/bin/echo "  OR"
+/bin/echo "- echo \"deb http://ftp.debian.org/debian sid main\" >>/etc/apt/sources.list"
+/bin/echo "- for Lenny: dpkg-reconfigure dash"
+/bin/echo
+/bin/echo " Don't execute these lines, these are a reminder for myself(amain) when preparing an DebWrt release:"
+/bin/echo "- rm -rf /lib/modules/*"
+/bin/echo "- rm -rf /lib/firmware/*"
+/bin/echo
+/bin/bash
+
+# Normal boot procedure
+exec /etc/init.d/rc S
