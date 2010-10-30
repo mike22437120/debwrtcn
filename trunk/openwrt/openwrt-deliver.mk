@@ -24,7 +24,7 @@
 # OPENWRT_LINUX_VERSION	- kernel version of the kernel build by OpenWrt
 # OPENWRT_LINUX_DIR     - OpenWrt's kernel build directory
 #
-include $(OPENWRT_SAVE_CONFIG_FILE)
+-include $(OPENWRT_SAVE_CONFIG_FILE)
 
 ERROR_MSG_NOCONF:=" not defined. Make sure OpenWrt build finished."
 
@@ -60,10 +60,10 @@ openwrt/deliver/check: ${OPENWRT_BIN_DIR} openwrt/deliver/import-config
 
 openwrt/deliver/image: openwrt/deliver/prepare
 	mkdir -p $(INSTALL_DIR)
-	if  [ "" != $(call qstrip,$(CONFIG_OPENWRT_TARGET_IMAGE_NAME)) ] \
-		cp -a ${OPENWRT_BIN_DIR}/$(call qstrip,$(CONFIG_OPENWRT_TARGET_IMAGE_NAME)) $(INSTALL_DIR)/$(TARGET_IMAGE_NAME) \
+	if  [ "" != $(call qstrip,$(CONFIG_OPENWRT_TARGET_IMAGE_NAME)) ]; then \
+		cp -a ${OPENWRT_BIN_DIR}/$(call qstrip,$(CONFIG_OPENWRT_TARGET_IMAGE_NAME)) $(INSTALL_DIR)/$(TARGET_IMAGE_NAME); \
 	else  \
-		
+		echo "TODO: openwrt/deliver/image"; \
 	fi
 
 openwrt/deliver/kernel-modules: openwrt/deliver/prepare
