@@ -1,7 +1,6 @@
-# note: this file has been generated
 choice
 	prompt "Target System"
-	default TARGET_brcm_2_4
+	default TARGET_brcm47xx
 	reset if !DEVEL
 	
 config TARGET_ppc40x
@@ -33,14 +32,6 @@ config TARGET_ar71xx
 	  Build firmware images for Atheros AR71xx/AR913x based boards.
 
 
-config TARGET_at91
-	bool "Atmel AT91"
-	select arm
-	depends BROKEN
-	help
-	  Build fimware images for Figment Design Labs VersaLink board.
-
-
 config TARGET_avr32
 	bool "Atmel AVR32"
 	select avr32
@@ -63,14 +54,6 @@ config TARGET_brcm47xx
 	help
 	  Build firmware images for Broadcom based routers
 	  (e.g. Netgear WGT634U)
-
-
-config TARGET_brcm_2_4
-	bool "Broadcom BCM947xx/953xx [2.4]"
-	select mipsel
-	help
-	  Build firmware images for Broadcom based routers
-	  (e.g. Linksys WRT54G(S), Asus WL-500g, Motorola WR850G)
 
 
 config TARGET_sibyte
@@ -214,6 +197,13 @@ config TARGET_rb532
 	select mipsel
 
 
+config TARGET_at91
+	bool "NetusG20"
+	select arm
+	help
+	  Build firmware images for Acmesystems NetusG20 board
+
+
 config TARGET_pxcab
 	bool "PowerXCell Accelerator Board"
 	select powerpc
@@ -308,6 +298,101 @@ endchoice
 choice
 	prompt "Subtarget" if HAS_SUBTARGETS
 
+config TARGET_au1000_au1500
+	bool "Au1500"
+	depends TARGET_au1000
+	select mipsel
+	help
+	  Build firmware for RMI/AMD Alchemy 1500,1550 boards
+	  (e.g. 4G-Systems Mesh/Access Cube, DBAu1550 ...)
+
+
+config TARGET_au1000_au1550
+	bool "Au1550"
+	depends TARGET_au1000
+	select mipsel
+	help
+	  Build firmware for RMI/AMD Alchemy 1500,1550 boards
+	  (e.g. 4G-Systems Mesh/Access Cube, DBAu1550 ...)
+
+
+config TARGET_xburst_qi_lb60
+	bool "QI Ben Nanonote (qi_lb60)"
+	depends TARGET_xburst
+	select mipsel
+	help
+	  Build firmware images for XBurst JZ47x0 based boards.
+
+
+config TARGET_xburst_n516
+	bool "Hanvon N516 e-book reader"
+	depends TARGET_xburst
+	select mipsel
+	help
+	  Build firmware images for XBurst JZ47x0 based boards.
+
+
+config TARGET_xburst_n526
+	bool "Hanvon N526 e-book reader"
+	depends TARGET_xburst
+	select mipsel
+	help
+	  Build firmware images for XBurst JZ47x0 based boards.
+
+
+config TARGET_orion_generic
+	bool "Generic"
+	depends TARGET_orion
+	select arm
+	help
+	  Build firmware images for orion based boards that boot from internal flash
+
+
+config TARGET_orion_harddisk
+	bool "Internal Hard-Disk"
+	depends TARGET_orion
+	select arm
+	help
+	  Build firmware images for orion based boards that boot directly from internal disk storage
+	  (e.g : Freecom DataTank 2, ...)
+
+
+config TARGET_ixp4xx_generic
+	bool "Generic"
+	depends TARGET_ixp4xx
+	select armeb
+	help
+	  Build firmware images for ixp4xx based boards that boot from internal flash
+	  (e.g : Linksys NSLU2, ...)
+
+
+config TARGET_ixp4xx_harddisk
+	bool "Internal Hard-Disk"
+	depends TARGET_ixp4xx
+	select armeb
+	help
+	  Build firmware images for ixp4xx based boards that boot directly from internal disk storage
+	  (e.g : Freecom FSG-3, ...)
+
+
+config TARGET_malta_le
+	bool "Little Endian"
+	depends TARGET_malta
+	select mipsel
+	help
+	  Build LE firmware images for MIPS Malta CoreLV board running in
+	  little-endian mode
+
+
+config TARGET_malta_be
+	bool "Big Endian"
+	depends TARGET_malta
+	select mips
+	help
+	  Build BE firmware images for MIPS Malta CoreLV board running in
+	  big-endian mode
+
+
 config TARGET_x86_generic
 	bool "Generic"
 	depends TARGET_x86
@@ -346,30 +431,20 @@ config TARGET_x86_net5501
 	  Build firmware images for Soekris net5501 board
 
 
-config TARGET_ixp4xx_generic
+config TARGET_ar71xx_generic
 	bool "Generic"
-	depends TARGET_ixp4xx
-	select armeb
-	help
-	  Build firmware images for ixp4xx based boards that boot from internal flash
-	  (e.g : Linksys NSLU2, ...)
-
-
-config TARGET_ixp4xx_harddisk
-	bool "Internal Hard-Disk"
-	depends TARGET_ixp4xx
-	select armeb
-	help
-	  Build firmware images for ixp4xx based boards that boot directly from internal disk storage
-	  (e.g : Freecom FSG-3, ...)
-
-
-config TARGET_ifxmips_ar9
-	bool "AR9"
-	depends TARGET_ifxmips
+	depends TARGET_ar71xx
 	select mips
 	help
-	  Lantiq AR9
+	  Build firmware images for Atheros AR71xx/AR913x based boards.
+
+
+config TARGET_ar71xx_nand
+	bool "Devices with NAND flash (mostly Mikrotik)"
+	depends TARGET_ar71xx
+	select mips
+	help
+	  Build firmware images for Atheros AR71xx/AR913x based boards.
 
 
 config TARGET_ifxmips_danube
@@ -380,28 +455,42 @@ config TARGET_ifxmips_danube
 	  Lantiq Danube
 
 
-config TARGET_xburst_qi_lb60
-	bool "QI Ben Nanonote (qi_lb60)"
-	depends TARGET_xburst
+config TARGET_ifxmips_ar9
+	bool "AR9"
+	depends TARGET_ifxmips
+	select mips
+	help
+	  Lantiq AR9
+
+
+config TARGET_ps3_petitboot
+	bool "Petitboot"
+	depends TARGET_ps3
+	select powerpc
+	select powerpc64
+	help
+	  Build for the Sony PS3 Game Console
+	  The OpenWRT build will create both a 1st stage PS3-Linux image
+	  suitable for programming into the PS3 flash memory, and a 2nd
+	  stage PS3-Linux image suitable for loading via bootloaders or
+	  the kexec utility.
+	  Enable the Petitboot package to build a PS3 bootloader.
+
+
+config TARGET_ramips_rt288x
+	bool "RT288x based boards"
+	depends TARGET_ramips
 	select mipsel
 	help
-	  Build firmware images for XBurst JZ47x0 based boards.
+	  Build firmware images for Ralink RT288x/RT305x based boards.
 
 
-config TARGET_xburst_n516
-	bool "Hanvon N516 e-book reader"
-	depends TARGET_xburst
+config TARGET_ramips_rt305x
+	bool "RT305x based boards"
+	depends TARGET_ramips
 	select mipsel
 	help
-	  Build firmware images for XBurst JZ47x0 based boards.
-
-
-config TARGET_xburst_n526
-	bool "Hanvon N526 e-book reader"
-	depends TARGET_xburst
-	select mipsel
-	help
-	  Build firmware images for XBurst JZ47x0 based boards.
+	  Build firmware images for Ralink RT288x/RT305x based boards.
 
 
 config TARGET_adm5120_router_le
@@ -422,111 +511,21 @@ config TARGET_adm5120_router_be
 	  running in big-endian mode (e.g : ZyXEL Prestige 335WT ...)
 
 
-config TARGET_ps3_petitboot
-	bool "Petitboot"
-	depends TARGET_ps3
-	select powerpc
-	select powerpc64
-	help
-	  Build for the Sony PS3 Game Console
-	  The OpenWRT build will create both a 1st stage PS3-Linux image
-	  suitable for programming into the PS3 flash memory, and a 2nd
-	  stage PS3-Linux image suitable for loading via bootloaders or
-	  the kexec utility.
-	  Enable the Petitboot package to build a PS3 bootloader.
-
-
-config TARGET_orion_generic
-	bool "Generic"
-	depends TARGET_orion
-	select arm
-	help
-	  Build firmware images for orion based boards that boot from internal flash
-
-
-config TARGET_orion_harddisk
-	bool "Internal Hard-Disk"
-	depends TARGET_orion
-	select arm
-	help
-	  Build firmware images for orion based boards that boot directly from internal disk storage
-	  (e.g : Freecom DataTank 2, ...)
-
-
-config TARGET_omap35xx_generic
-	bool "Generic"
+config TARGET_omap35xx_beagleboard
+	bool "Beagleboard"
 	depends TARGET_omap35xx
 	select arm
 	help
-	  Build firmware images for ti omap35xx based boards 
+	  Build firmware images for Beagleboard
 
 
-config TARGET_ar71xx_generic
-	bool "Generic"
-	depends TARGET_ar71xx
-	select mips
+config TARGET_omap35xx_gumstix
+	bool "Gumstix Overo"
+	depends TARGET_omap35xx
+	select arm
+	depends BROKEN
 	help
-	  Build firmware images for Atheros AR71xx/AR913x based boards.
-
-
-config TARGET_ar71xx_nand
-	bool "Devices with NAND flash"
-	depends TARGET_ar71xx
-	select mips
-	help
-	  Build firmware images for Atheros AR71xx/AR913x based boards.
-
-
-config TARGET_malta_le
-	bool "Little Endian"
-	depends TARGET_malta
-	select mipsel
-	help
-	  Build LE firmware images for MIPS Malta CoreLV board running in
-	  little-endian mode
-
-
-config TARGET_malta_be
-	bool "Big Endian"
-	depends TARGET_malta
-	select mips
-	help
-	  Build BE firmware images for MIPS Malta CoreLV board running in
-	  big-endian mode
-
-
-config TARGET_au1000_au1500
-	bool "Au1500"
-	depends TARGET_au1000
-	select mipsel
-	help
-	  Build firmware for RMI/AMD Alchemy 1500,1550 boards
-	  (e.g. 4G-Systems Mesh/Access Cube, DBAu1550 ...)
-
-
-config TARGET_au1000_au1550
-	bool "Au1550"
-	depends TARGET_au1000
-	select mipsel
-	help
-	  Build firmware for RMI/AMD Alchemy 1500,1550 boards
-	  (e.g. 4G-Systems Mesh/Access Cube, DBAu1550 ...)
-
-
-config TARGET_ramips_rt288x
-	bool "RT288x based boards"
-	depends TARGET_ramips
-	select mipsel
-	help
-	  Build firmware images for Ralink RT288x/RT305x based boards.
-
-
-config TARGET_ramips_rt305x
-	bool "RT305x based boards"
-	depends TARGET_ramips
-	select mipsel
-	help
-	  Build firmware images for Ralink RT288x/RT305x based boards.
+	  Build firmware images for Gumstix Overo Boards
 
 
 endchoice
@@ -534,9 +533,199 @@ endchoice
 choice
 	prompt "Target Profile"
 
-config TARGET_mpc52xx_Default
+config TARGET_pxcab_Default
 	bool "Default"
-	depends TARGET_mpc52xx
+	depends TARGET_pxcab
+
+
+config TARGET_iop32x_Default
+	bool "Default"
+	depends TARGET_iop32x
+
+
+config TARGET_au1000_au1500_Atheros
+	bool "Atheros WiFi (default)"
+	depends TARGET_au1000_au1500
+	
+
+
+config TARGET_au1000_au1500_InternetBox
+	bool "T-Mobile InternetBox"
+	depends TARGET_au1000_au1500
+	
+
+	help
+	  Package set for the T-Mobile "InternetBox" (TMD SB1-S)
+
+config TARGET_au1000_au1500_MeshCube
+	bool "MeshCube MTX-1"
+	depends TARGET_au1000_au1500
+	
+
+	help
+	  Package set for the 4G MeshCube (MTX-1)
+
+config TARGET_au1000_au1550_DBAu1550
+	bool "AMD DBAu1550 Development Kit"
+	depends TARGET_au1000_au1550
+	
+
+
+config TARGET_coldfire_Default
+	bool "Default"
+	depends TARGET_coldfire
+
+
+config TARGET_ubicom32_Default
+	bool "Default"
+	depends TARGET_ubicom32
+
+
+config TARGET_sibyte_Default
+	bool "Default"
+	depends TARGET_sibyte
+
+
+config TARGET_cobalt_Default
+	bool "Default"
+	depends TARGET_cobalt
+
+
+config TARGET_kirkwood_Default
+	bool "Default"
+	depends TARGET_kirkwood
+
+
+config TARGET_xburst_qi_lb60_Default
+	bool "Default"
+	depends TARGET_xburst_qi_lb60
+
+
+config TARGET_xburst_n516_Default
+	bool "Default"
+	depends TARGET_xburst_n516
+
+
+config TARGET_xburst_n526_Default
+	bool "Default"
+	depends TARGET_xburst_n526
+
+
+config TARGET_ppc44x_Default
+	bool "Default"
+	depends TARGET_ppc44x
+
+
+config TARGET_rb532_Default
+	bool "Default"
+	depends TARGET_rb532
+
+
+config TARGET_orion_generic_Default
+	bool "Default"
+	depends TARGET_orion_generic
+
+
+config TARGET_orion_harddisk_Default
+	bool "Default"
+	depends TARGET_orion_harddisk
+
+
+config TARGET_avr32_Default
+	bool "Default"
+	depends TARGET_avr32
+
+
+config TARGET_atheros_Default
+	bool "Default"
+	depends TARGET_atheros
+
+
+config TARGET_ixp4xx_generic_Default
+	bool "Default Profile"
+	depends TARGET_ixp4xx_generic
+	
+
+	help
+	  Default IXP4xx Profile
+
+config TARGET_ixp4xx_generic_Atheros-ath5k
+	bool "Atheros WiFi (atk5k)"
+	depends TARGET_ixp4xx_generic
+	
+
+	help
+	  Package set compatible with hardware using Atheros WiFi cards
+
+config TARGET_ixp4xx_generic_NSLU2
+	bool "Linksys NSLU2"
+	depends TARGET_ixp4xx_generic
+	
+
+	help
+	  Package set optimized for the Linksys NSLU2
+
+config TARGET_ixp4xx_generic_NAS100d
+	bool "Iomega NAS 100d"
+	depends TARGET_ixp4xx_generic
+	
+
+	help
+	  Package set optimized for the Iomega NAS 100d
+
+config TARGET_ixp4xx_generic_DSMG600RevA
+	bool "DSM-G600 Rev A"
+	depends TARGET_ixp4xx_generic
+	
+
+	help
+	  Package set optimized for the DSM-G600 Rev A
+
+config TARGET_ixp4xx_generic_USR8200
+	bool "USRobotics USR8200"
+	depends TARGET_ixp4xx_generic
+	
+
+	help
+	  Package set optimized for the USRobotics USR8200
+
+config TARGET_ixp4xx_harddisk_FSG3
+	bool "Freecom FSG-3"
+	depends TARGET_ixp4xx_harddisk
+	
+
+	help
+	  Package set optimized for the Freecom FSG-3
+
+config TARGET_ep93xx_Default
+	bool "Default"
+	depends TARGET_ep93xx
+
+
+config TARGET_s3c24xx_openmoko-gta02-minimal
+	bool "Openmoko GTA-02 (minimal)"
+	depends TARGET_s3c24xx
+	
+
+	help
+	  minimal Package set compatible with the Openmoko GTA-02 hardware
+
+config TARGET_s3c24xx_openmoko-gta02-full
+	bool "Openmoko GTA-02 (full)"
+	depends TARGET_s3c24xx
+	
+
+	help
+	  Package set with accelerated x11-environment and phone-suite (paroli)
+
+config TARGET_gemini_Default
+	bool "Default"
+	depends TARGET_gemini
+
+
+config TARGET_ppc40x_Default
+	bool "Default"
+	depends TARGET_ppc40x
 
 
 config TARGET_etrax_default
@@ -555,101 +744,109 @@ config TARGET_etrax_vhdl_no_fb
 	help
 	  Setup the Foxboard for FOXVHDL support with no framebuffer
 
-config TARGET_ppc40x_Default
+config TARGET_uml_Default
 	bool "Default"
-	depends TARGET_ppc40x
+	depends TARGET_uml
 
 
-config TARGET_brcm_2_4_Broadcom
-	bool "Generic, Broadcom WiFi (default)"
-	depends TARGET_brcm_2_4
+config TARGET_mpc52xx_Default
+	bool "Default"
+	depends TARGET_mpc52xx
+
+
+config TARGET_pxa_Default
+	bool "Default"
+	depends TARGET_pxa
+
+
+config TARGET_brcm47xx_Broadcom-b43
+	bool "Broadcom BCM43xx WiFi (b43, default)"
+	depends TARGET_brcm47xx
 	
 
 	help
-	  Default package set compatible with most BCM947xx hardware
+	  Package set compatible with hardware using Broadcom BCM43xx cards
+	  using the MAC80211 b43 and b43legacy drivers.
 
-config TARGET_brcm_2_4_BroadcomMimo
-	bool "Generic, Broadcom WiFi (MIMO)"
-	depends TARGET_brcm_2_4
+config TARGET_brcm47xx_Broadcom-wl
+	bool "Broadcom BCM43xx WiFi (wl, proprietary)"
+	depends TARGET_brcm47xx
 	
 
 	help
-	  Default package set compatible with 802.11n (draft) hardware
+	  Package set compatible with hardware using Broadcom BCM43xx cards
+	  using the proprietary broadcom wireless "wl" driver.
 
-config TARGET_brcm_2_4_None
-	bool "Generic, No WiFi"
-	depends TARGET_brcm_2_4
+config TARGET_brcm47xx_Atheros
+	bool "Atheros WiFi (madwifi)"
+	depends TARGET_brcm47xx
+	
+
+	help
+	  Package set compatible with hardware using Atheros WiFi cards
+
+config TARGET_brcm47xx_Atheros-ath5k
+	bool "Atheros WiFi (ath5k)"
+	depends TARGET_brcm47xx
+	
+
+	help
+	  Package set compatible with hardware using Atheros WiFi cards
+
+config TARGET_brcm47xx_None
+	bool "No WiFi"
+	depends TARGET_brcm47xx
 	
 
 	help
 	  Package set without WiFi support
 
-config TARGET_brcm_2_4_USBGeneric
-	bool "Generic USB"
-	depends TARGET_brcm_2_4
+config TARGET_brcm47xx_WGT634U
+	bool "Netgear WGT634U"
+	depends TARGET_brcm47xx
 	
 
 	help
-	  Package set with for Broadcom routers with USB/USB2 (OHCI/EHCI) support.
-	  Includes the WRTSL54GS, WL-520gU, WL-500gP v2, any other BCM5354 routers
-	  with USB.
+	  Package set compatible with the Netgear WGT634U. Contains USB support
 
-config TARGET_brcm_2_4_WL500G
-	bool "ASUS WL-500g"
-	depends TARGET_brcm_2_4
+config TARGET_brcm47xx_WL500GPv1
+	bool "ASUS WL-500g Premium v1 (Atheros WiFi using madwifi)"
+	depends TARGET_brcm47xx
 	
 
 	help
-	  Package set optimized for the WL-500g with USB and parallel port support
+	  Package set optimized for the WL-500g Premium v1 with USB and Atheros WiFi card support
 
-config TARGET_brcm_2_4_WL500GD
-	bool "ASUS WL-500g Deluxe"
-	depends TARGET_brcm_2_4
+config TARGET_brcm47xx_WRT350Nv1
+	bool "Linksys WRT350Nv1"
+	depends TARGET_brcm47xx
 	
 
 	help
-	  Package set optimized for the WL-500g Deluxe with USB support
+	  Package set compatible with the Linksys WRT350Nv1. Contains USB support
 
-config TARGET_brcm_2_4_WL500GP
-	bool "ASUS WL-500g Premium"
-	depends TARGET_brcm_2_4
+config TARGET_brcm47xx_WRTSL54GS
+	bool "Linksys WRTSL54GS"
+	depends TARGET_brcm47xx
 	
 
 	help
-	  Package set optimized for the WL-500g Premium with USB support
+	  Package set compatible with the Linksys WRTSL54GS. Contains USB support
 
-config TARGET_brcm_2_4_WL700GE
-	bool "WL-700gE"
-	depends TARGET_brcm_2_4
-	
+config TARGET_at91_Default
+	bool "Default"
+	depends TARGET_at91
 
-	help
-	  Minimal package set optimized for booting the WL-700gE from flash with a writable filesystem
-	  and the utilities to create a new filesystem on the HDD
 
-config TARGET_brcm_2_4_WLHDD
-	bool "WL-HDD"
-	depends TARGET_brcm_2_4
-	
+config TARGET_malta_le_Default
+	bool "Default"
+	depends TARGET_malta_le
 
-	help
-	  Package set optimized for the WL-HDD with USB and IDE support
 
-config TARGET_brcm_2_4_WRT300Nv11
-	bool "Linksys WRT300N v1.1"
-	depends TARGET_brcm_2_4
-	
+config TARGET_malta_be_Default
+	bool "Default"
+	depends TARGET_malta_be
 
-	help
-	  Package set optimized for the WRT300N v1.1
-
-config TARGET_brcm_2_4_WRT54G3G
-	bool "Linksys WRT54G3G"
-	depends TARGET_brcm_2_4
-	
-
-	help
-	  Package set optimized for the WRT54G3G with UMTS support
 
 config TARGET_x86_generic_Generic
 	bool "Generic"
@@ -711,555 +908,14 @@ config TARGET_x86_net5501_Default
 	depends TARGET_x86_net5501
 
 
-config TARGET_s3c24xx_openmoko-gta02-minimal
-	bool "Openmoko GTA-02 (minimal)"
-	depends TARGET_s3c24xx
-	
-
-	help
-	  minimal Package set compatible with the Openmoko GTA-02 hardware
-
-config TARGET_s3c24xx_openmoko-gta02-full
-	bool "Openmoko GTA-02 (full)"
-	depends TARGET_s3c24xx
-	
-
-	help
-	  Package set with accelerated x11-environment and phone-suite (paroli)
-
-config TARGET_brcm47xx_Broadcom-b43
-	bool "Broadcom BCM43xx WiFi (default)"
-	depends TARGET_brcm47xx
+config TARGET_brcm63xx_Broadcom-wl
+	bool "Broadcom BCM43xx WiFi (wl, proprietary)"
+	depends TARGET_brcm63xx
 	
 
 	help
 	  Package set compatible with hardware using Broadcom BCM43xx cards
-
-config TARGET_brcm47xx_Atheros
-	bool "Atheros WiFi"
-	depends TARGET_brcm47xx
-	
-
-	help
-	  Package set compatible with hardware using Atheros WiFi cards
-
-config TARGET_brcm47xx_Atheros-ath5k
-	bool "Atheros WiFi (atk5k)"
-	depends TARGET_brcm47xx
-	
-
-	help
-	  Package set compatible with hardware using Atheros WiFi cards
-
-config TARGET_brcm47xx_None
-	bool "No WiFi"
-	depends TARGET_brcm47xx
-	
-
-	help
-	  Package set without WiFi support
-
-config TARGET_brcm47xx_WGT634U
-	bool "Netgear WGT634U"
-	depends TARGET_brcm47xx
-	
-
-	help
-	  Package set compatible with the Netgear WGT634U. Contains USB support
-
-config TARGET_brcm47xx_WL500GPv1
-	bool "ASUS WL-500g Premium v1 (Atheros WiFi)"
-	depends TARGET_brcm47xx
-	
-
-	help
-	  Package set optimized for the WL-500g Premium v1 with USB and Atheros WiFi card support
-
-config TARGET_brcm47xx_WRT350Nv1
-	bool "Linksys WRT350Nv1"
-	depends TARGET_brcm47xx
-	
-
-	help
-	  Package set compatible with the Linksys WRT350Nv1. Contains USB support
-
-config TARGET_brcm47xx_WRTSL54GS
-	bool "Linksys WRTSL54GS"
-	depends TARGET_brcm47xx
-	
-
-	help
-	  Package set compatible with the Linksys WRTSL54GS. Contains USB support
-
-config TARGET_ixp4xx_generic_Default
-	bool "Default Profile"
-	depends TARGET_ixp4xx_generic
-	
-
-	help
-	  Default IXP4xx Profile
-
-config TARGET_ixp4xx_generic_Atheros-ath5k
-	bool "Atheros WiFi (atk5k)"
-	depends TARGET_ixp4xx_generic
-	
-
-	help
-	  Package set compatible with hardware using Atheros WiFi cards
-
-config TARGET_ixp4xx_generic_NSLU2
-	bool "Linksys NSLU2"
-	depends TARGET_ixp4xx_generic
-	
-
-	help
-	  Package set optimized for the Linksys NSLU2
-
-config TARGET_ixp4xx_generic_NAS100d
-	bool "Iomega NAS 100d"
-	depends TARGET_ixp4xx_generic
-	
-
-	help
-	  Package set optimized for the Iomega NAS 100d
-
-config TARGET_ixp4xx_generic_DSMG600RevA
-	bool "DSM-G600 Rev A"
-	depends TARGET_ixp4xx_generic
-	
-
-	help
-	  Package set optimized for the DSM-G600 Rev A
-
-config TARGET_ixp4xx_generic_USR8200
-	bool "USRobotics USR8200"
-	depends TARGET_ixp4xx_generic
-	
-
-	help
-	  Package set optimized for the USRobotics USR8200
-
-config TARGET_ixp4xx_harddisk_FSG3
-	bool "Freecom FSG-3"
-	depends TARGET_ixp4xx_harddisk
-	
-
-	help
-	  Package set optimized for the Freecom FSG-3
-
-config TARGET_iop32x_Default
-	bool "Default"
-	depends TARGET_iop32x
-
-
-config TARGET_mpc83xx_Default
-	bool "Default"
-	depends TARGET_mpc83xx
-
-
-config TARGET_uml_Default
-	bool "Default"
-	depends TARGET_uml
-
-
-config TARGET_ifxmips_ar9_None
-	bool "Generic, No WiFi"
-	depends TARGET_ifxmips_ar9
-	
-
-	help
-	  Package set without WiFi support
-
-config TARGET_ifxmips_ar9_Atheros
-	bool "Atheros WiFi (default)"
-	depends TARGET_ifxmips_ar9
-	
-
-	help
-	  Package set compatible with hardware using Atheros WiFi cards
-
-config TARGET_ifxmips_ar9_Ralink
-	bool "Ralink RT61 Wifi (ARV452)"
-	depends TARGET_ifxmips_ar9
-	
-
-	help
-	  Package set compatible with hardware using Ralink WiFi cards
-
-config TARGET_ifxmips_danube_None
-	bool "Generic, No WiFi"
-	depends TARGET_ifxmips_danube
-	
-
-	help
-	  Package set without WiFi support
-
-config TARGET_ifxmips_danube_Atheros
-	bool "Atheros WiFi (default)"
-	depends TARGET_ifxmips_danube
-	
-
-	help
-	  Package set compatible with hardware using Atheros WiFi cards
-
-config TARGET_ifxmips_danube_Ralink
-	bool "Ralink RT61 Wifi (ARV452)"
-	depends TARGET_ifxmips_danube
-	
-
-	help
-	  Package set compatible with hardware using Ralink WiFi cards
-
-config TARGET_rb532_Default
-	bool "Default"
-	depends TARGET_rb532
-
-
-config TARGET_at91_Default
-	bool "Default"
-	depends TARGET_at91
-
-
-config TARGET_ep93xx_Default
-	bool "Default"
-	depends TARGET_ep93xx
-
-
-config TARGET_rdc_ar525w
-	bool "Airlink AR525W"
-	depends TARGET_rdc
-	
-
-
-config TARGET_rdc_bifferboard
-	bool "Bifferboard"
-	depends TARGET_rdc
-	
-
-
-config TARGET_rdc_r8610
-	bool "RDC R8610 Evaluation Board"
-	depends TARGET_rdc
-	
-
-
-config TARGET_rdc_sitecom
-	bool "Devices from Sitecom (WL-153, DC-230)"
-	depends TARGET_rdc
-	
-
-
-config TARGET_xburst_qi_lb60_Default
-	bool "Default"
-	depends TARGET_xburst_qi_lb60
-
-
-config TARGET_xburst_n516_Default
-	bool "Default"
-	depends TARGET_xburst_n516
-
-
-config TARGET_xburst_n526_Default
-	bool "Default"
-	depends TARGET_xburst_n526
-
-
-config TARGET_adm5120_router_le_Generic
-	bool "Generic (default)"
-	depends TARGET_adm5120_router_le
-	
-
-	help
-	  Generic package set compatible with most boards.
-
-config TARGET_adm5120_router_le_CAS630
-	bool "Cellvision CAS-630 IP camera (Experimental)"
-	depends TARGET_adm5120_router_le
-	
-
-	help
-	  Package set optimized for the Cellvision CAS-630 device.
-
-config TARGET_adm5120_router_le_CAS630W
-	bool "Cellvision CAS-630W IP camera (Experimental)"
-	depends TARGET_adm5120_router_le
-	
-
-	help
-	  Package set optimized for the Cellvision CAS-630W device.
-
-config TARGET_adm5120_router_le_CAS670
-	bool "Cellvision CAS-670 IP camera (Experimental)"
-	depends TARGET_adm5120_router_le
-	
-
-	help
-	  Package set optimized for the Cellvision CAS-670 device.
-
-config TARGET_adm5120_router_le_CAS670W
-	bool "Cellvision CAS-670W IP camera (Experimental)"
-	depends TARGET_adm5120_router_le
-	
-
-	help
-	  Package set optimized for the Cellvision CAS-670 device.
-
-config TARGET_adm5120_router_le_CAS700
-	bool "Cellvision CAS-700 IP camera (Experimental)"
-	depends TARGET_adm5120_router_le
-	
-
-	help
-	  Package set optimized for the Cellvision CAS-700 device.
-
-config TARGET_adm5120_router_le_CAS700W
-	bool "Cellvision CAS-700W IP camera (Experimental)"
-	depends TARGET_adm5120_router_le
-	
-
-	help
-	  Package set optimized for the Cellvision CAS-700W device.
-
-config TARGET_adm5120_router_le_CAS771
-	bool "Cellvision CAS-771 IP camera (Experimental)"
-	depends TARGET_adm5120_router_le
-	
-
-	help
-	  Package set optimized for the Cellvision CAS-771 device.
-
-config TARGET_adm5120_router_le_CAS771W
-	bool "Cellvision CAS-771W IP camera (Experimental)"
-	depends TARGET_adm5120_router_le
-	
-
-	help
-	  Package set optimized for the Cellvision CAS-771W device.
-
-config TARGET_adm5120_router_le_CAS790
-	bool "Cellvision CAS-790 IP camera (Experimental)"
-	depends TARGET_adm5120_router_le
-	
-
-	help
-	  Package set optimized for the Cellvision CAS-790 device.
-
-config TARGET_adm5120_router_le_CAS861
-	bool "Cellvision CAS-861 IP camera (Experimental)"
-	depends TARGET_adm5120_router_le
-	
-
-	help
-	  Package set optimized for the Cellvision CAS-861 device.
-
-config TARGET_adm5120_router_le_CAS861W
-	bool "Cellvision CAS-861W IP camera (Experimental)"
-	depends TARGET_adm5120_router_le
-	
-
-	help
-	  Package set optimized for the Cellvision CAS-861W device.
-
-config TARGET_adm5120_router_le_NFS101U
-	bool "Cellvision NFS-101U Network File Server (Experimental)"
-	depends TARGET_adm5120_router_le
-	
-
-	help
-	  Package set optimized for the Cellvision NFS-101U device.
-
-config TARGET_adm5120_router_le_NFS101WU
-	bool "Cellvision NFS-101WU Network File Server (Experimental)"
-	depends TARGET_adm5120_router_le
-	
-
-	help
-	  Package set optimized for the Cellvision NFS-101WU device.
-
-config TARGET_adm5120_router_le_NP27G
-	bool "Compex NP27G"
-	depends TARGET_adm5120_router_le
-	
-
-	help
-	  Package set optimized for the Compex NP27G.
-
-config TARGET_adm5120_router_le_NP28G
-	bool "Compex NP28G"
-	depends TARGET_adm5120_router_le
-	
-
-	help
-	  Package set optimized for the Compex NP28G.
-
-config TARGET_adm5120_router_le_WP54
-	bool "Compex WP54 family"
-	depends TARGET_adm5120_router_le
-	
-
-	help
-	  Package set optimized for the Compex WP54 family.
-
-config TARGET_adm5120_router_le_BR6104K
-	bool "Edimax BR-6104K (Unofficial)"
-	depends TARGET_adm5120_router_le
-	
-
-	help
-	  Package set optimized for the Edimax BR-6104K
-
-config TARGET_adm5120_router_le_BR6104KP
-	bool "Edimax BR-6104KP (Unofficial)"
-	depends TARGET_adm5120_router_le
-	
-
-	help
-	  Package set optimized for the Edimax BR-6104KP
-
-config TARGET_adm5120_router_le_BR6104WG
-	bool "Edimax BR-6104Wg (Unofficial, No WiFi)"
-	depends TARGET_adm5120_router_le
-	
-
-	help
-	  Package set optimized for the Edimax BR-6104Wg
-
-config TARGET_adm5120_router_le_BR6114WG
-	bool "Edimax BR-6114WG (Unofficial, No WiFi)"
-	depends TARGET_adm5120_router_le
-	
-
-	help
-	  Package set optimized for the Edimax BR-6114WG
-
-config TARGET_adm5120_router_le_EASY5120RT
-	bool "Infineon EASY 5120-RT Reference Board"
-	depends TARGET_adm5120_router_le
-	
-
-	help
-	  Package set optimized for the Infineon EASY 5120P-ATA Reference Board
-
-config TARGET_adm5120_router_le_EASY5120PATA
-	bool "Infineon EASY 5120P-ATA Reference Board"
-	depends TARGET_adm5120_router_le
-	
-
-
-config TARGET_adm5120_router_le_PMUGW
-	bool "Motorola Powerline MU Gateway (EXPERIMENTAL)"
-	depends TARGET_adm5120_router_le
-	
-
-	help
-	  Package set optimized for the Motorola Powerline MU Gateway board
-
-config TARGET_adm5120_router_le_5GXI
-	bool "Osbridge 5GXi/5XLi (Unofficial)"
-	depends TARGET_adm5120_router_le
-	
-
-	help
-	  Package set optimized for the OSBRiDGE 5GXi/5XLi boards.
-
-config TARGET_adm5120_router_le_RouterBoard
-	bool "Mikrotik RouterBoard 1xx family"
-	depends TARGET_adm5120_router_le
-	
-
-	help
-	  Package set compatible with the RouterBoard RB1xx devices. Contains RouterOS to OpenWrt\ installation scripts.
-
-config TARGET_adm5120_router_be_Generic
-	bool "Generic (default)"
-	depends TARGET_adm5120_router_be
-	
-
-	help
-	  Generic package set compatible with most boards.
-
-config TARGET_adm5120_router_be_P334WT
-	bool "ZyXEL Prestige 334WT"
-	depends TARGET_adm5120_router_be
-	
-
-	help
-	  Package set optimized for the ZyXEL Prestige 334WT board.
-
-config TARGET_adm5120_router_be_P335WT
-	bool "ZyXEL Prestige 335WT"
-	depends TARGET_adm5120_router_be
-	
-
-	help
-	  Package set optimized for the ZyXEL Prestige 335WT board.
-
-config TARGET_ps3_petitboot_Default
-	bool "Default PS3 Petitboot profile"
-	depends TARGET_ps3_petitboot
-	
-
-	help
-	  Default PS3 Petitboot profile
-
-config TARGET_octeon_generic
-	bool "Generic Octeon board"
-	depends TARGET_octeon
-	
-
-	help
-	  Base packages for Octeon boards.
-
-config TARGET_octeon_mototech
-	bool "Mototech evaluation board"
-	depends TARGET_octeon
-	
-
-	help
-	  Package set compatible with the Mototech Evaluation Board (CN5000F).
-
-config TARGET_goldfish_Default
-	bool "Default"
-	depends TARGET_goldfish
-
-
-config TARGET_orion_generic_Default
-	bool "Default"
-	depends TARGET_orion_generic
-
-
-config TARGET_orion_harddisk_Default
-	bool "Default"
-	depends TARGET_orion_harddisk
-
-
-config TARGET_pxa_Default
-	bool "Default"
-	depends TARGET_pxa
-
-
-config TARGET_ppc44x_Default
-	bool "Default"
-	depends TARGET_ppc44x
-
-
-config TARGET_omap35xx_generic_Beagleboard
-	bool "beagleboard"
-	depends TARGET_omap35xx_generic
-	
-
-	help
-	  Beagleboard - www.beagleboard.org
-
-config TARGET_cobalt_Default
-	bool "Default"
-	depends TARGET_cobalt
-
-
-config TARGET_coldfire_Default
-	bool "Default"
-	depends TARGET_coldfire
-
+	  using the proprietary broadcom wireless "wl" driver.
 
 config TARGET_brcm63xx_Broadcom
 	bool "Broadcom WiFi (default)"
@@ -1306,13 +962,13 @@ config TARGET_ar71xx_generic_Default
 	help
 	  Default package set compatible with most boards.
 
-config TARGET_ar71xx_generic_DefaultNoWifi
-	bool "Default Profile (no WiFi)"
+config TARGET_ar71xx_generic_Minimal
+	bool "Minimal Profile (no drivers)"
 	depends TARGET_ar71xx_generic
 	
 
 	help
-	  Default package set compatible with most boards.
+	  Minimal package set compatible with most boards.
 
 config TARGET_ar71xx_generic_Madwifi
 	bool "Atheros WiFi (madwifi)"
@@ -1578,77 +1234,131 @@ config TARGET_ar71xx_nand_Madwifi
 	help
 	  Package set compatible with hardware using Atheros WiFi cards.
 
-config TARGET_malta_le_Default
+config TARGET_goldfish_Default
 	bool "Default"
-	depends TARGET_malta_le
+	depends TARGET_goldfish
 
 
-config TARGET_malta_be_Default
+config TARGET_ifxmips_danube_None
+	bool "Generic, No WiFi"
+	depends TARGET_ifxmips_danube
+	
+
+	help
+	  Package set without WiFi support
+
+config TARGET_ifxmips_danube_Atheros
+	bool "Atheros WiFi (default)"
+	depends TARGET_ifxmips_danube
+	
+
+	help
+	  Package set compatible with hardware using Atheros WiFi cards
+
+config TARGET_ifxmips_danube_Ralink
+	bool "Ralink RT61 Wifi (ARV452)"
+	depends TARGET_ifxmips_danube
+	
+
+	help
+	  Package set compatible with hardware using Ralink WiFi cards
+
+config TARGET_ifxmips_ar9_None
+	bool "Generic, No WiFi"
+	depends TARGET_ifxmips_ar9
+	
+
+	help
+	  Package set without WiFi support
+
+config TARGET_ifxmips_ar9_Atheros
+	bool "Atheros WiFi (default)"
+	depends TARGET_ifxmips_ar9
+	
+
+	help
+	  Package set compatible with hardware using Atheros WiFi cards
+
+config TARGET_ifxmips_ar9_Ralink
+	bool "Ralink RT61 Wifi (ARV452)"
+	depends TARGET_ifxmips_ar9
+	
+
+	help
+	  Package set compatible with hardware using Ralink WiFi cards
+
+config TARGET_ps3_petitboot_Default
+	bool "Default PS3 Petitboot profile"
+	depends TARGET_ps3_petitboot
+	
+
+	help
+	  Default PS3 Petitboot profile
+
+config TARGET_ramips_rt288x_Default
+	bool "Default Profile"
+	depends TARGET_ramips_rt288x
+	
+
+	help
+	  Default package set compatible with most boards.
+
+config TARGET_ramips_rt305x_Default
+	bool "Default Profile"
+	depends TARGET_ramips_rt305x
+	
+
+	help
+	  Default package set compatible with most boards.
+
+config TARGET_mpc83xx_Default
 	bool "Default"
-	depends TARGET_malta_be
+	depends TARGET_mpc83xx
 
 
-config TARGET_ubicom32_Default
-	bool "Default"
-	depends TARGET_ubicom32
+config TARGET_rdc_ar525w
+	bool "Airlink AR525W"
+	depends TARGET_rdc
+	
 
 
-config TARGET_pxcab_Default
-	bool "Default"
-	depends TARGET_pxcab
+config TARGET_rdc_bifferboard
+	bool "Bifferboard"
+	depends TARGET_rdc
+	
 
 
-config TARGET_gemini_Default
-	bool "Default"
-	depends TARGET_gemini
+config TARGET_rdc_r8610
+	bool "RDC R8610 Evaluation Board"
+	depends TARGET_rdc
+	
 
 
-config TARGET_sibyte_Default
-	bool "Default"
-	depends TARGET_sibyte
+config TARGET_rdc_sitecom
+	bool "Devices from Sitecom (WL-153, DC-230)"
+	depends TARGET_rdc
+	
 
+
+config TARGET_octeon_generic
+	bool "Generic Octeon board"
+	depends TARGET_octeon
+	
+
+	help
+	  Base packages for Octeon boards.
+
+config TARGET_octeon_mototech
+	bool "Mototech evaluation board"
+	depends TARGET_octeon
+	
+
+	help
+	  Package set compatible with the Mototech Evaluation Board (CN5000F).
 
 config TARGET_mx2_Default
 	bool "Default"
 	depends TARGET_mx2
-
-
-config TARGET_avr32_Default
-	bool "Default"
-	depends TARGET_avr32
-
-
-config TARGET_kirkwood_Default
-	bool "Default"
-	depends TARGET_kirkwood
-
-
-config TARGET_au1000_au1500_Atheros
-	bool "Atheros WiFi (default)"
-	depends TARGET_au1000_au1500
-	
-
-
-config TARGET_au1000_au1500_InternetBox
-	bool "T-Mobile InternetBox"
-	depends TARGET_au1000_au1500
-	
-
-	help
-	  Package set for the T-Mobile "InternetBox" (TMD SB1-S)
-
-config TARGET_au1000_au1500_MeshCube
-	bool "MeshCube MTX-1"
-	depends TARGET_au1000_au1500
-	
-
-	help
-	  Package set for the 4G MeshCube (MTX-1)
-
-config TARGET_au1000_au1550_DBAu1550
-	bool "AMD DBAu1550 Development Kit"
-	depends TARGET_au1000_au1550
-	
 
 
 config TARGET_ar7_Annex-A
@@ -1684,31 +1394,256 @@ config TARGET_ar7_None
 	help
 	  Package set without WiFi support
 
+config TARGET_adm5120_router_le_Generic
+	bool "Generic (default)"
+	depends TARGET_adm5120_router_le
+	
+
+	help
+	  Generic package set compatible with most boards.
+
+config TARGET_adm5120_router_le_CAS630
+	bool "Cellvision CAS-630 IP camera (Experimental)"
+	depends TARGET_adm5120_router_le
+	
+
+	help
+	  Package set optimized for the Cellvision CAS-630 device.
+
+config TARGET_adm5120_router_le_CAS630W
+	bool "Cellvision CAS-630W IP camera (Experimental)"
+	depends TARGET_adm5120_router_le
+	
+
+	help
+	  Package set optimized for the Cellvision CAS-630W device.
+
+config TARGET_adm5120_router_le_CAS670
+	bool "Cellvision CAS-670 IP camera (Experimental)"
+	depends TARGET_adm5120_router_le
+	
+
+	help
+	  Package set optimized for the Cellvision CAS-670 device.
+
+config TARGET_adm5120_router_le_CAS670W
+	bool "Cellvision CAS-670W IP camera (Experimental)"
+	depends TARGET_adm5120_router_le
+	
+
+	help
+	  Package set optimized for the Cellvision CAS-670 device.
+
+config TARGET_adm5120_router_le_CAS700
+	bool "Cellvision CAS-700 IP camera (Experimental)"
+	depends TARGET_adm5120_router_le
+	
+
+	help
+	  Package set optimized for the Cellvision CAS-700 device.
+
+config TARGET_adm5120_router_le_CAS700W
+	bool "Cellvision CAS-700W IP camera (Experimental)"
+	depends TARGET_adm5120_router_le
+	
+
+	help
+	  Package set optimized for the Cellvision CAS-700W device.
+
+config TARGET_adm5120_router_le_CAS771
+	bool "Cellvision CAS-771 IP camera (Experimental)"
+	depends TARGET_adm5120_router_le
+	
+
+	help
+	  Package set optimized for the Cellvision CAS-771 device.
+
+config TARGET_adm5120_router_le_CAS771W
+	bool "Cellvision CAS-771W IP camera (Experimental)"
+	depends TARGET_adm5120_router_le
+	
+
+	help
+	  Package set optimized for the Cellvision CAS-771W device.
+
+config TARGET_adm5120_router_le_CAS790
+	bool "Cellvision CAS-790 IP camera (Experimental)"
+	depends TARGET_adm5120_router_le
+	
+
+	help
+	  Package set optimized for the Cellvision CAS-790 device.
+
+config TARGET_adm5120_router_le_CAS861
+	bool "Cellvision CAS-861 IP camera (Experimental)"
+	depends TARGET_adm5120_router_le
+	
+
+	help
+	  Package set optimized for the Cellvision CAS-861 device.
+
+config TARGET_adm5120_router_le_CAS861W
+	bool "Cellvision CAS-861W IP camera (Experimental)"
+	depends TARGET_adm5120_router_le
+	
+
+	help
+	  Package set optimized for the Cellvision CAS-861W device.
+
+config TARGET_adm5120_router_le_NFS101U
+	bool "Cellvision NFS-101U Network File Server (Experimental)"
+	depends TARGET_adm5120_router_le
+	
+
+	help
+	  Package set optimized for the Cellvision NFS-101U device.
+
+config TARGET_adm5120_router_le_NFS101WU
+	bool "Cellvision NFS-101WU Network File Server (Experimental)"
+	depends TARGET_adm5120_router_le
+	
+
+	help
+	  Package set optimized for the Cellvision NFS-101WU device.
+
+config TARGET_adm5120_router_le_NP27G
+	bool "Compex NP27G"
+	depends TARGET_adm5120_router_le
+	
+
+	help
+	  Package set optimized for the Compex NP27G.
+
+config TARGET_adm5120_router_le_NP28G
+	bool "Compex NP28G"
+	depends TARGET_adm5120_router_le
+	
+
+	help
+	  Package set optimized for the Compex NP28G.
+
+config TARGET_adm5120_router_le_WP54
+	bool "Compex WP54 family"
+	depends TARGET_adm5120_router_le
+	
+
+	help
+	  Package set optimized for the Compex WP54 family.
+
+config TARGET_adm5120_router_le_BR6104K
+	bool "Edimax BR-6104K (Unofficial)"
+	depends TARGET_adm5120_router_le
+	
+
+	help
+	  Package set optimized for the Edimax BR-6104K
+
+config TARGET_adm5120_router_le_BR6104KP
+	bool "Edimax BR-6104KP (Unofficial)"
+	depends TARGET_adm5120_router_le
+	
+
+	help
+	  Package set optimized for the Edimax BR-6104KP
+
+config TARGET_adm5120_router_le_BR6104WG
+	bool "Edimax BR-6104Wg (Unofficial, No WiFi)"
+	depends TARGET_adm5120_router_le
+	
+
+	help
+	  Package set optimized for the Edimax BR-6104Wg
+
+config TARGET_adm5120_router_le_BR6114WG
+	bool "Edimax BR-6114WG (Unofficial, No WiFi)"
+	depends TARGET_adm5120_router_le
+	
+
+	help
+	  Package set optimized for the Edimax BR-6114WG
+
+config TARGET_adm5120_router_le_EASY5120RT
+	bool "Infineon EASY 5120-RT Reference Board"
+	depends TARGET_adm5120_router_le
+	
+
+	help
+	  Package set optimized for the Infineon EASY 5120P-ATA Reference Board
+
+config TARGET_adm5120_router_le_EASY5120PATA
+	bool "Infineon EASY 5120P-ATA Reference Board"
+	depends TARGET_adm5120_router_le
+	
+
+
+config TARGET_adm5120_router_le_PMUGW
+	bool "Motorola Powerline MU Gateway (EXPERIMENTAL)"
+	depends TARGET_adm5120_router_le
+	
+
+	help
+	  Package set optimized for the Motorola Powerline MU Gateway board
+
+config TARGET_adm5120_router_le_5GXI
+	bool "Osbridge 5GXi/5XLi (Unofficial)"
+	depends TARGET_adm5120_router_le
+	
+
+	help
+	  Package set optimized for the OSBRiDGE 5GXi/5XLi boards.
+
+config TARGET_adm5120_router_le_RouterBoard
+	bool "Mikrotik RouterBoard 1xx family"
+	depends TARGET_adm5120_router_le
+	
+
+	help
+	  Package set compatible with the RouterBoard RB1xx devices. Contains RouterOS to OpenWrt\ installation scripts.
+
+config TARGET_adm5120_router_be_Generic
+	bool "Generic (default)"
+	depends TARGET_adm5120_router_be
+	
+
+	help
+	  Generic package set compatible with most boards.
+
+config TARGET_adm5120_router_be_P334WT
+	bool "ZyXEL Prestige 334WT"
+	depends TARGET_adm5120_router_be
+	
+
+	help
+	  Package set optimized for the ZyXEL Prestige 334WT board.
+
+config TARGET_adm5120_router_be_P335WT
+	bool "ZyXEL Prestige 335WT"
+	depends TARGET_adm5120_router_be
+	
+
+	help
+	  Package set optimized for the ZyXEL Prestige 335WT board.
+
 config TARGET_amazon_Default
 	bool "Default"
 	depends TARGET_amazon
 
 
-config TARGET_ramips_rt288x_Default
-	bool "Default Profile"
-	depends TARGET_ramips_rt288x
+config TARGET_omap35xx_beagleboard_Beagleboard
+	bool "beagleboard"
+	depends TARGET_omap35xx_beagleboard
 	
 
 	help
-	  Default package set compatible with most boards.
+	  Beagleboard - www.beagleboard.org
 
-config TARGET_ramips_rt305x_Default
-	bool "Default Profile"
-	depends TARGET_ramips_rt305x
+config TARGET_omap35xx_gumstix_Gumstix
+	bool "gumstix"
+	depends TARGET_omap35xx_gumstix
 	
 
 	help
-	  Default package set compatible with most boards.
-
-config TARGET_atheros_Default
-	bool "Default"
-	depends TARGET_atheros
-
+	  Gumstix www.gumstix.com
 
 endchoice
 
@@ -1718,107 +1653,106 @@ config HAS_SUBTARGETS
 config TARGET_BOARD
 	string
 
-		default "mpc52xx" if TARGET_mpc52xx
-		default "etrax" if TARGET_etrax
-		default "ppc40x" if TARGET_ppc40x
-		default "brcm-2.4" if TARGET_brcm_2_4
-		default "x86" if TARGET_x86
-		default "s3c24xx" if TARGET_s3c24xx
-		default "brcm47xx" if TARGET_brcm47xx
-		default "ixp4xx" if TARGET_ixp4xx
+		default "pxcab" if TARGET_pxcab
 		default "iop32x" if TARGET_iop32x
-		default "mpc83xx" if TARGET_mpc83xx
-		default "uml" if TARGET_uml
-		default "ifxmips" if TARGET_ifxmips
-		default "rb532" if TARGET_rb532
-		default "at91" if TARGET_at91
-		default "ep93xx" if TARGET_ep93xx
-		default "rdc" if TARGET_rdc
-		default "xburst" if TARGET_xburst
-		default "adm5120" if TARGET_adm5120
-		default "ps3" if TARGET_ps3
-		default "octeon" if TARGET_octeon
-		default "goldfish" if TARGET_goldfish
-		default "orion" if TARGET_orion
-		default "pxa" if TARGET_pxa
-		default "ppc44x" if TARGET_ppc44x
-		default "omap35xx" if TARGET_omap35xx
-		default "cobalt" if TARGET_cobalt
+		default "au1000" if TARGET_au1000
 		default "coldfire" if TARGET_coldfire
+		default "ubicom32" if TARGET_ubicom32
+		default "sibyte" if TARGET_sibyte
+		default "cobalt" if TARGET_cobalt
+		default "kirkwood" if TARGET_kirkwood
+		default "xburst" if TARGET_xburst
+		default "ppc44x" if TARGET_ppc44x
+		default "rb532" if TARGET_rb532
+		default "orion" if TARGET_orion
+		default "avr32" if TARGET_avr32
+		default "atheros" if TARGET_atheros
+		default "ixp4xx" if TARGET_ixp4xx
+		default "ep93xx" if TARGET_ep93xx
+		default "s3c24xx" if TARGET_s3c24xx
+		default "gemini" if TARGET_gemini
+		default "ppc40x" if TARGET_ppc40x
+		default "etrax" if TARGET_etrax
+		default "uml" if TARGET_uml
+		default "mpc52xx" if TARGET_mpc52xx
+		default "pxa" if TARGET_pxa
+		default "brcm47xx" if TARGET_brcm47xx
+		default "at91" if TARGET_at91
+		default "malta" if TARGET_malta
+		default "x86" if TARGET_x86
 		default "brcm63xx" if TARGET_brcm63xx
 		default "ar71xx" if TARGET_ar71xx
-		default "malta" if TARGET_malta
-		default "ubicom32" if TARGET_ubicom32
-		default "pxcab" if TARGET_pxcab
-		default "gemini" if TARGET_gemini
-		default "sibyte" if TARGET_sibyte
-		default "mx2" if TARGET_mx2
-		default "avr32" if TARGET_avr32
-		default "kirkwood" if TARGET_kirkwood
-		default "au1000" if TARGET_au1000
-		default "ar7" if TARGET_ar7
-		default "amazon" if TARGET_amazon
+		default "goldfish" if TARGET_goldfish
+		default "ifxmips" if TARGET_ifxmips
+		default "ps3" if TARGET_ps3
 		default "ramips" if TARGET_ramips
-		default "atheros" if TARGET_atheros
+		default "mpc83xx" if TARGET_mpc83xx
+		default "rdc" if TARGET_rdc
+		default "octeon" if TARGET_octeon
+		default "mx2" if TARGET_mx2
+		default "ar7" if TARGET_ar7
+		default "adm5120" if TARGET_adm5120
+		default "amazon" if TARGET_amazon
+		default "omap35xx" if TARGET_omap35xx
 
 config DEFAULT_TARGET_OPTIMIZATION
 	string
-	default "-Os -pipe -funit-at-a-time" if TARGET_mpc52xx
-	default "-Os -pipe -funit-at-a-time" if TARGET_etrax
+	default "-Os -pipe -funit-at-a-time" if TARGET_pxcab
+	default "-Os -pipe -march=armv5te -mtune=xscale -funit-at-a-time" if TARGET_iop32x
+	default "-Os -pipe -mips32 -mtune=mips32 -funit-at-a-time" if TARGET_au1000_au1500
+	default "-Os -pipe -mips32 -mtune=mips32 -funit-at-a-time" if TARGET_au1000_au1550
+	default "-Os -pipe -mcfv4e -funit-at-a-time" if TARGET_coldfire
+	default "-Os -pipe -funit-at-a-time" if TARGET_ubicom32
+	default "-Os -pipe -march=sb1 -funit-at-a-time" if TARGET_sibyte
+	default "-O2 -pipe -mtune=r5000 -funit-at-a-time" if TARGET_cobalt
+	default "-Os -pipe -march=armv5te -mtune=xscale -funit-at-a-time" if TARGET_kirkwood
+	default "-Os -pipe -mips32 -mtune=mips32 -funit-at-a-time" if TARGET_xburst_qi_lb60
+	default "-Os -pipe -mips32 -mtune=mips32 -funit-at-a-time" if TARGET_xburst_n516
+	default "-Os -pipe -mips32 -mtune=mips32 -funit-at-a-time" if TARGET_xburst_n526
+	default "-Os -pipe -funit-at-a-time -mcpu=440" if TARGET_ppc44x
+	default "-Os -pipe -mips32 -mtune=mips32 -funit-at-a-time" if TARGET_rb532
+	default "-Os -pipe -march=armv5t -mtune=xscale -funit-at-a-time" if TARGET_orion_generic
+	default "-Os -pipe -march=armv5t -mtune=xscale -funit-at-a-time" if TARGET_orion_harddisk
+	default "-Os -pipe -funit-at-a-time" if TARGET_avr32
+	default "-Os -pipe -mips32 -mtune=mips32 -funit-at-a-time" if TARGET_atheros
+	default "-Os -pipe -march=armv5te -mtune=xscale -funit-at-a-time" if TARGET_ixp4xx_generic
+	default "-Os -pipe -march=armv5te -mtune=xscale -funit-at-a-time" if TARGET_ixp4xx_harddisk
+	default "-Os -pipe -march=armv4t -funit-at-a-time" if TARGET_ep93xx
+	default "-O2 -pipe -march=armv4t -mtune=arm920t -funit-at-a-time" if TARGET_s3c24xx
+	default "-Os -pipe -march=armv4 -mtune=arm9tdmi -funit-at-a-time" if TARGET_gemini
 	default "-Os -pipe -funit-at-a-time -mcpu=405" if TARGET_ppc40x
-	default "-Os -pipe -mips32 -mtune=mips32 -funit-at-a-time" if TARGET_brcm_2_4
+	default "-Os -pipe -funit-at-a-time" if TARGET_etrax
+	default "-O2 -pipe -march=athlon64 -funit-at-a-time" if TARGET_uml
+	default "-Os -pipe -funit-at-a-time" if TARGET_mpc52xx
+	default "-Os -pipe -march=armv5te -mtune=xscale -funit-at-a-time" if TARGET_pxa
+	default "-Os -pipe -mips32 -mtune=mips32 -funit-at-a-time" if TARGET_brcm47xx
+	default "-Os -pipe -march=armv5te -mtune=arm926ej-s -funit-at-a-time" if TARGET_at91
+	default "-Os -pipe -mips32r2 -mtune=mips32r2 -funit-at-a-time" if TARGET_malta_le
+	default "-Os -pipe -mips32r2 -mtune=mips32r2 -funit-at-a-time" if TARGET_malta_be
 	default "-O2 -pipe -march=i486 -funit-at-a-time" if TARGET_x86_generic
 	default "-O2 -pipe -march=i486 -funit-at-a-time" if TARGET_x86_olpc
 	default "-O2 -pipe -march=i486 -funit-at-a-time" if TARGET_x86_xen_domu
 	default "-O2 -pipe -march=i486 -funit-at-a-time" if TARGET_x86_ep80579
 	default "-march=k6-2 -fno-align-functions -fno-align-loops -fno-align-jumps -fno-align-labels" if TARGET_x86_net5501
-	default "-O2 -pipe -march=armv4t -mtune=arm920t -funit-at-a-time" if TARGET_s3c24xx
-	default "-Os -pipe -mips32 -mtune=mips32 -funit-at-a-time" if TARGET_brcm47xx
-	default "-Os -pipe -march=armv5te -mtune=xscale -funit-at-a-time" if TARGET_ixp4xx_generic
-	default "-Os -pipe -march=armv5te -mtune=xscale -funit-at-a-time" if TARGET_ixp4xx_harddisk
-	default "-Os -pipe -march=armv5te -mtune=xscale -funit-at-a-time" if TARGET_iop32x
-	default "-Os -pipe -funit-at-a-time" if TARGET_mpc83xx
-	default "-O2 -pipe -march=athlon64 -funit-at-a-time" if TARGET_uml
-	default "-Os -pipe -mips32r2 -mtune=mips32r2 -funit-at-a-time" if TARGET_ifxmips_ar9
-	default "-Os -pipe -mips32r2 -mtune=mips32r2 -funit-at-a-time" if TARGET_ifxmips_danube
-	default "-Os -pipe -mips32 -mtune=mips32 -funit-at-a-time" if TARGET_rb532
-	default "-Os -pipe -march=armv5te -mtune=xscale -funit-at-a-time" if TARGET_at91
-	default "-Os -pipe -march=armv4t -funit-at-a-time" if TARGET_ep93xx
-	default "-Os -pipe -march=i486 -mtune=i486 -funit-at-a-time" if TARGET_rdc
-	default "-Os -pipe -mips32 -mtune=mips32 -funit-at-a-time" if TARGET_xburst_qi_lb60
-	default "-Os -pipe -mips32 -mtune=mips32 -funit-at-a-time" if TARGET_xburst_n516
-	default "-Os -pipe -mips32 -mtune=mips32 -funit-at-a-time" if TARGET_xburst_n526
-	default "-Os -pipe -mips32 -mtune=mips32 -funit-at-a-time" if TARGET_adm5120_router_le
-	default "-Os -pipe -mips32 -mtune=mips32 -funit-at-a-time" if TARGET_adm5120_router_be
-	default "-Os -pipe -funit-at-a-time" if TARGET_ps3_petitboot
-	default "-Os -pipe -mtune=octeon -funit-at-a-time" if TARGET_octeon
-	default "-O2 -pipe -march=armv5te -mtune=xscale -funit-at-a-time" if TARGET_goldfish
-	default "-Os -pipe -march=armv5t -mtune=xscale -funit-at-a-time" if TARGET_orion_generic
-	default "-Os -pipe -march=armv5t -mtune=xscale -funit-at-a-time" if TARGET_orion_harddisk
-	default "-Os -pipe -march=armv5te -mtune=xscale -funit-at-a-time" if TARGET_pxa
-	default "-Os -pipe -funit-at-a-time -mcpu=440" if TARGET_ppc44x
-	default "-Os -pipe -march=armv5te -mtune=xscale -funit-at-a-time" if TARGET_omap35xx_generic
-	default "-O2 -pipe -mtune=r5000 -funit-at-a-time" if TARGET_cobalt
-	default "-Os -pipe -mcfv4e -funit-at-a-time" if TARGET_coldfire
 	default "-Os -pipe -mips32 -mtune=mips32 -funit-at-a-time" if TARGET_brcm63xx
 	default "-Os -pipe -mips32r2 -mtune=mips32r2 -funit-at-a-time" if TARGET_ar71xx_generic
 	default "-Os -pipe -mips32r2 -mtune=mips32r2 -funit-at-a-time" if TARGET_ar71xx_nand
-	default "-Os -pipe -mips32r2 -mtune=mips32r2 -funit-at-a-time" if TARGET_malta_le
-	default "-Os -pipe -mips32r2 -mtune=mips32r2 -funit-at-a-time" if TARGET_malta_be
-	default "-Os -pipe -funit-at-a-time" if TARGET_ubicom32
-	default "-Os -pipe -funit-at-a-time" if TARGET_pxcab
-	default "-Os -pipe -march=armv4 -mtune=arm9tdmi -funit-at-a-time" if TARGET_gemini
-	default "-Os -pipe -march=sb1 -funit-at-a-time" if TARGET_sibyte
-	default "-Os -pipe -march=armv5te -mtune=arm926ej-s -funit-at-a-time" if TARGET_mx2
-	default "-Os -pipe -funit-at-a-time" if TARGET_avr32
-	default "-Os -pipe -march=armv5te -mtune=xscale -funit-at-a-time" if TARGET_kirkwood
-	default "-Os -pipe -mips32 -mtune=mips32 -funit-at-a-time" if TARGET_au1000_au1500
-	default "-Os -pipe -mips32 -mtune=mips32 -funit-at-a-time" if TARGET_au1000_au1550
-	default "-Os -pipe -mips32 -mtune=mips32 -funit-at-a-time" if TARGET_ar7
-	default "-Os -pipe -mips32 -mtune=mips32 -funit-at-a-time" if TARGET_amazon
+	default "-O2 -pipe -march=armv5te -mtune=xscale -funit-at-a-time" if TARGET_goldfish
+	default "-Os -pipe -mips32r2 -mtune=mips32r2 -funit-at-a-time" if TARGET_ifxmips_danube
+	default "-Os -pipe -mips32r2 -mtune=mips32r2 -funit-at-a-time" if TARGET_ifxmips_ar9
+	default "-Os -pipe -funit-at-a-time" if TARGET_ps3_petitboot
 	default "-Os -pipe -mips32r2 -mtune=mips32r2 -funit-at-a-time" if TARGET_ramips_rt288x
 	default "-Os -pipe -mips32r2 -mtune=mips32r2 -funit-at-a-time" if TARGET_ramips_rt305x
-	default "-Os -pipe -mips32 -mtune=mips32 -funit-at-a-time" if TARGET_atheros
+	default "-Os -pipe -funit-at-a-time" if TARGET_mpc83xx
+	default "-Os -pipe -march=i486 -mtune=i486 -funit-at-a-time" if TARGET_rdc
+	default "-Os -pipe -mtune=octeon -funit-at-a-time" if TARGET_octeon
+	default "-Os -pipe -march=armv5te -mtune=arm926ej-s -funit-at-a-time" if TARGET_mx2
+	default "-Os -pipe -mips32 -mtune=mips32 -funit-at-a-time" if TARGET_ar7
+	default "-Os -pipe -mips32 -mtune=mips32 -funit-at-a-time" if TARGET_adm5120_router_le
+	default "-Os -pipe -mips32 -mtune=mips32 -funit-at-a-time" if TARGET_adm5120_router_be
+	default "-Os -pipe -mips32 -mtune=mips32 -funit-at-a-time" if TARGET_amazon
+	default "-Os -pipe -march=armv5te -mtune=xscale -funit-at-a-time" if TARGET_omap35xx_beagleboard
+	default "-Os -pipe -march=armv5te -mtune=xscale -funit-at-a-time" if TARGET_omap35xx_gumstix
 	default "-Os -pipe -funit-at-a-time"
 
 config LINUX_2_6_30
@@ -1829,11 +1763,7 @@ config LINUX_2_6_32
 	bool
 
 
-config LINUX_2_4_37
-	bool
-
-
-config LINUX_2_6_33
+config LINUX_2_6_34
 	bool
 
 
@@ -1841,7 +1771,7 @@ config LINUX_2_6_25
 	bool
 
 
-config LINUX_2_6_34
+config LINUX_2_6_33
 	bool
 
 	config DEFAULT_admswconfig
@@ -1853,13 +1783,19 @@ config LINUX_2_6_34
 	config DEFAULT_base-files
 		bool
 
+	config DEFAULT_bluez-hcidump
+		bool
+
+	config DEFAULT_bluez-utils
+		bool
+
 	config DEFAULT_br2684ctl
 		bool
 
 	config DEFAULT_busybox
 		bool
 
-	config DEFAULT_comgt
+	config DEFAULT_crda
 		bool
 
 	config DEFAULT_dnsmasq
@@ -1874,10 +1810,10 @@ config LINUX_2_6_34
 	config DEFAULT_enlightenment
 		bool
 
-	config DEFAULT_fconfig
+	config DEFAULT_ext2
 		bool
 
-	config DEFAULT_fdisk
+	config DEFAULT_fconfig
 		bool
 
 	config DEFAULT_firewall
@@ -1895,10 +1831,22 @@ config LINUX_2_6_34
 	config DEFAULT_gpioctl
 		bool
 
+	config DEFAULT_hegw
+		bool
+
 	config DEFAULT_hostap-utils
 		bool
 
 	config DEFAULT_hotplug2
+		bool
+
+	config DEFAULT_ifx-tapidemo
+		bool
+
+	config DEFAULT_ifxmips-dsl-api
+		bool
+
+	config DEFAULT_ifxmips-dsl-control
 		bool
 
 	config DEFAULT_ip
@@ -1955,16 +1903,16 @@ config LINUX_2_6_34
 	config DEFAULT_kmod-bcm63xx-spi
 		bool
 
-	config DEFAULT_kmod-brcm-57xx
+	config DEFAULT_kmod-bluetooth
 		bool
 
 	config DEFAULT_kmod-brcm-wl
 		bool
 
-	config DEFAULT_kmod-brcm-wl-mimo
+	config DEFAULT_kmod-button-hotplug
 		bool
 
-	config DEFAULT_kmod-button-hotplug
+	config DEFAULT_kmod-cfg80211
 		bool
 
 	config DEFAULT_kmod-crypto-hw-geode
@@ -2048,16 +1996,10 @@ config LINUX_2_6_34
 	config DEFAULT_kmod-i2c-scx200
 		bool
 
-	config DEFAULT_kmod-ide-aec62xx
-		bool
-
 	config DEFAULT_kmod-ide-core
 		bool
 
 	config DEFAULT_kmod-ide-it821x
-		bool
-
-	config DEFAULT_kmod-ide-pdc202xx
 		bool
 
 	config DEFAULT_kmod-ieee1394
@@ -2096,13 +2038,22 @@ config LINUX_2_6_34
 	config DEFAULT_kmod-ledtrig-adm5120-switch
 		bool
 
+	config DEFAULT_kmod-lib80211
+		bool
+
 	config DEFAULT_kmod-libertas
+		bool
+
+	config DEFAULT_kmod-libertas-sd
+		bool
+
+	config DEFAULT_kmod-libphy
 		bool
 
 	config DEFAULT_kmod-loop
 		bool
 
-	config DEFAULT_kmod-lp
+	config DEFAULT_kmod-mac80211
 		bool
 
 	config DEFAULT_kmod-mac80211-hwsim
@@ -2126,9 +2077,6 @@ config LINUX_2_6_34
 	config DEFAULT_kmod-nls-iso8859-1
 		bool
 
-	config DEFAULT_kmod-nozomi
-		bool
-
 	config DEFAULT_kmod-ocf
 		bool
 
@@ -2145,12 +2093,6 @@ config LINUX_2_6_34
 		bool
 
 	config DEFAULT_kmod-pcmcia-au1000
-		bool
-
-	config DEFAULT_kmod-pcmcia-core
-		bool
-
-	config DEFAULT_kmod-pcmcia-serial
 		bool
 
 	config DEFAULT_kmod-pcnet32
@@ -2181,9 +2123,6 @@ config LINUX_2_6_34
 		bool
 
 	config DEFAULT_kmod-rtc-m48t86
-		bool
-
-	config DEFAULT_kmod-rtc-rv5c386a
 		bool
 
 	config DEFAULT_kmod-sangam-atm-annex-a
@@ -2228,6 +2167,9 @@ config LINUX_2_6_34
 	config DEFAULT_kmod-switch
 		bool
 
+	config DEFAULT_kmod-switch-ip175c
+		bool
+
 	config DEFAULT_kmod-tg3
 		bool
 
@@ -2252,13 +2194,22 @@ config LINUX_2_6_34
 	config DEFAULT_kmod-usb-ohci
 		bool
 
+	config DEFAULT_kmod-usb-serial
+		bool
+
+	config DEFAULT_kmod-usb-serial-cp210x
+		bool
+
+	config DEFAULT_kmod-usb-serial-ftdi
+		bool
+
+	config DEFAULT_kmod-usb-serial-pl2303
+		bool
+
 	config DEFAULT_kmod-usb-storage
 		bool
 
 	config DEFAULT_kmod-usb-uhci
-		bool
-
-	config DEFAULT_kmod-usb-uhci-iv
 		bool
 
 	config DEFAULT_kmod-usb2
@@ -2280,9 +2231,6 @@ config LINUX_2_6_34
 		bool
 
 	config DEFAULT_kmod-wdt-scx200
-		bool
-
-	config DEFAULT_kmod-wlcompat
 		bool
 
 	config DEFAULT_kmod-xen-evtchn
@@ -2309,13 +2257,28 @@ config LINUX_2_6_34
 	config DEFAULT_libgcc
 		bool
 
+	config DEFAULT_libnl-tiny
+		bool
+
+	config DEFAULT_libstdcpp
+		bool
+
 	config DEFAULT_linux-atm
+		bool
+
+	config DEFAULT_luci
+		bool
+
+	config DEFAULT_luci-app-ntpc
 		bool
 
 	config DEFAULT_mtd
 		bool
 
 	config DEFAULT_nas
+		bool
+
+	config DEFAULT_ntpclient
 		bool
 
 	config DEFAULT_nvram
@@ -2342,7 +2305,19 @@ config LINUX_2_6_34
 	config DEFAULT_ps3-utils
 		bool
 
+	config DEFAULT_pyserial
+		bool
+
 	config DEFAULT_python
+		bool
+
+	config DEFAULT_python-mini
+		bool
+
+	config DEFAULT_python-openssl
+		bool
+
+	config DEFAULT_python-sqlite3
 		bool
 
 	config DEFAULT_swconfig
@@ -2357,7 +2332,16 @@ config LINUX_2_6_34
 	config DEFAULT_uci
 		bool
 
+	config DEFAULT_udev
+		bool
+
 	config DEFAULT_udevtrigger
+		bool
+
+	config DEFAULT_usb
+		bool
+
+	config DEFAULT_usbutils
 		bool
 
 	config DEFAULT_vsc7385-ucode-ap83

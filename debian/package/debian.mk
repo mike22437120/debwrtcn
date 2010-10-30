@@ -15,4 +15,27 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include $(TOPDIR)/debian/package/mtd/build.mk
+include $(TOPDIR)/debian/package/libnl/build.mk
+include $(TOPDIR)/debian/package/iw/build.mk
+include $(TOPDIR)/debian/package/debwrt-kernel-headers/build.mk
+include $(TOPDIR)/debian/package/robocfg/build.mk
+include $(TOPDIR)/debian/package/nvram/build.mk
+include $(TOPDIR)/debian/package/hostapd/build.mk
+include $(TOPDIR)/debian/package/shellinabox/build.mk
+include $(TOPDIR)/debian/package/libpar2/build.mk
+include $(TOPDIR)/debian/package/nzbget/build.mk
+
+debian/package/rootfs: debian/package/iw          \
+                       debian/package/libnl       \
+                       debian/package/robocfg     \
+                       debian/package/nvram       \
+                       debian/package/hostapd     \
+                       debian/package/shellinabox 
+#                       debian/package/libpar2     \
+#                       debian/package/nzbget
+
+debian/package/clean:
+	rm -rf $(DEBIAN_BUILD_DIR)/usr/src/*	
+	rm -f $(TOPDIR)/debian/package/*/build
+	rm -f $(TOPDIR)/debian/package/*/prepare
+	rm -f $(TOPDIR)/debian/package/*/deliver

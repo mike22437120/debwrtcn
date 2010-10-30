@@ -1,0 +1,84 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:		hostapd
+# Required-Start:
+# Required-Stop:
+# Should-Start:		$network
+# Should-Stop:
+# Default-Start:	2 3 4 5
+# Default-Stop:		0 1 6
+# Short-Description:	Advanced IEEE 802.11 management daemon
+# Description:		Userspace IEEE 802.11 AP and IEEE 802.1X/WPA/WPA2/EAP
+#			Authenticator
+### END INIT INFO
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+DAEMON=/usr/sbin/hostapd-mini
+NAME=hostapd-mini
+DESC="advanced IEEE 802.11 management"
+PIDFILE=/var/run/hostapd-mini.pid
+
+test -x $DAEMON || exit 0
+
+if [ -s /etc/default/hostapd ] ; then
+	. /etc/default/hostapd
+fi
+
+if [ -z "$DAEMON_CONF" ]; then
+	DAEMON_CONF=/etc/hostapd/hostapd-wpa.conf
+fi
+
+DAEMON_OPTS="-B -P $PIDFILE $DAEMON_OPTS $DAEMON_CONF"
+
+. /lib/lsb/init-functions
+
+function check() {
+        # exit if the kernel version is not 2.6
+        KVER=$(uname -r)
+        KMAJ=${KVER%${KVER#*.*[^.]}}
+        KMAJ=${KMAJ%.}
+        if [ "$KMAJ" != "2.6" ]; then
+                echo
+                log_warning_msg "needs kernel 2.6 - no configuration possible";
+                log_end_msg 0
+                exit 0
+        fi
+
+        if ! ( cat /proc/net/dev | grep wlan0: >/dev/null 2>&1 ); then
+                echo; log_warning_msg "b43 wlan0 interface not found - no configuration possible"
+                log_action_end_msg 0;
+                exit 0;
+        fi
+}
+
+case "$1" in
+  start)
+	log_daemon_msg "Starting $DESC"
+	log_progress_msg "$NAME"
+	check
+	if [ "$RUN_DAEMON" != "yes" ]; then
+		log_progress_msg "disabled via /etc/default/hostapd-mini"
+		log_end_msg 0
+		exit 0
+	fi
+	start-stop-daemon --start --oknodo --quiet \
+		--exec $DAEMON --pidfile $PIDFILE -- $DAEMON_OPTS > /dev/null
+	log_end_msg "$?"
+	;;
+  stop)
+	log_daemon_msg "Stopping $DESC"
+	log_progress_msg "$NAME"
+	check
+	start-stop-daemon --stop --oknodo --quiet \
+		--exec $DAEMON --pidfile $PIDFILE
+	log_end_msg "$?"
+	;;
+  *)
+	N=/etc/init.d/$NAME
+	echo "Usage: $N {start|stop}" >&2
+	exit 1
+	;;
+esac
+
+exit 0

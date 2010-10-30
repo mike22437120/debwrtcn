@@ -17,17 +17,17 @@
 
 # Filename of firmware image created by OpenWrt
 #
-config OPENWRT_TARGET_IMAGE_NAME_BIN
+config DEBWRT_TARGET_IMAGE_NAME_BIN
         string
         default "openwrt-wgt634u-squashfs.bin" if TARGET_brcm47xx_WGT634U
-        default "openwrt-ar71xx-ubnt-rs-squashfs-factory.bin" if TARGET_ar71xx_generic_UBNTRS
-        default "openwrt-ar71xx-ubnt-rspro-squashfs-factory.bin" if TARGET_ar71xx_generic_UBNTRSPRO
+        default "openwrt-ar71xx-generic-ubnt-rs-squashfs-factory.bin" if TARGET_ar71xx_generic_UBNTRS
+        default "openwrt-ar71xx-generic-ubnt-rspro-squashfs-factory.bin" if TARGET_ar71xx_generic_UBNTRSPRO
         default "unknown"
 
 # TRX file is bin file + small header
 #
-config OPENWRT_TARGET_IMAGE_NAME_TRX
+config DEBWRT_TARGET_IMAGE_NAME_TRX
         string
-        default "openwrt-brcm47xx-squashfs.trx" if TARGET_brcm47xx
+        default "debwrt-firmware-brcm47xx-squashfs.trx" if TARGET_brcm47xx
 		default "unknown"
 

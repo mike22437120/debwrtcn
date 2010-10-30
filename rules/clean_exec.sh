@@ -20,6 +20,7 @@
 #
 eval `echo -n "export -n"; \
 	export \
+	| grep ^declare \
 	| awk -F "[ =]" '{print $3}' \
       	| grep -v -e HOME \
        	          -e PWD \

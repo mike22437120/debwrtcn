@@ -17,7 +17,7 @@
 
 RELEASE:=angel
 BUILD_CYCLE_ID:=-1
-VERSION:=1.0$(BUILD_CYCLE_ID)
+VERSION:=2.0$(BUILD_CYCLE_ID)
 RELEASE_DATE=$(shell LC_ALL=c date +"%d %B %Y")
 SVN_REVISION:=$(shell $(SCRIPT_GET_SVN_REVISION))
 DEBWRTVERSION:=$(RELEASE) - $(VERSION) - [ $(RELEASE_DATE) ($(SVN_REVISION)) ]
@@ -28,6 +28,9 @@ space:= $(empty) $(empty)
 
 # Include DebWrt config
 -include $(TOPDIR)/.config
+
+# Target arch
+TARGET_ARCH:=$(call qstrip,$(CONFIG_ARCH))
 
 # Board [example: ar7xx]
 BOARD:=$(call qstrip,$(CONFIG_TARGET_BOARD))
@@ -97,11 +100,17 @@ OPENWRT_SAVE_CONFIG_FILE:=$(OPENWRT_BUILD_DIR)/.openwrt_env
 OPENWRT_DOWNLOAD_DIR:=$(call qstrip,$(CONFIG_OPENWRT_DOWNLOAD_DIR))
 
 # Debian build environment version
-DEBIAN_BUILD_VERSION:=sid
+DEBIAN_BUILD_VERSION:=$(call qstrip,$(CONFIG_DEBWRT_DEBIAN_RELEASE))
 
 # Debian
 DEBIAN_BUILD_DIR:=$(BUILD_DIR_BASE)/debian-$(BOARD)-$(SUB_BOARD)-$(DEBIAN_BUILD_VERSION)
 
+# Debian packages dir
+DEBIAN_PACKAGES_DIR:=$(TOPDIR)/debian/package
+INSTALL_DIR_DEBIAN_PACKAGES:=$(INSTALL_DIR)/debian
+
+# Debian rootfs
+ROOTFS_BUILD_DIR:=$(BUILD_DIR_BASE)/rootfs-$(TARGET_ARCH)-$(DEBWRT_VERSION)
 
 # Export defaults to other Makefiles
 export

@@ -61,19 +61,11 @@ openwrt/deliver/check: ${OPENWRT_BIN_DIR} openwrt/deliver/import-config
 
 openwrt/deliver/image: openwrt/deliver/prepare
 	mkdir -p $(INSTALL_DIR)
-	if  [ "unknown" != $(call qstrip,$(CONFIG_OPENWRT_TARGET_IMAGE_NAME_BIN)) ]; then \
-		cp -a ${OPENWRT_BIN_DIR}/$(call qstrip,$(CONFIG_OPENWRT_TARGET_IMAGE_NAME_BIN)) $(INSTALL_DIR)/$(TARGET_IMAGE_NAME_BIN); \
-	else  \
-		echo "Failed to copy firmware BIN image. Configure image name in config/image_name.in"; \
-	fi
-	if  [ "unknown" != $(call qstrip,$(CONFIG_OPENWRT_TARGET_IMAGE_NAME_TRX)) ]; then \
-		cp -a ${OPENWRT_BIN_DIR}/$(call qstrip,$(CONFIG_OPENWRT_TARGET_IMAGE_NAME_TRX)) $(INSTALL_DIR)/$(TARGET_IMAGE_NAME_TRX); \
-	else  \
-		echo "Failed to copy firmware TRX image. Configure image name in config/image_name.in"; \
-	fi
-	if [ ! -e $(INSTALL_DIR)/$(TARGET_IMAGE_NAME_BIN) -a ! -e $(INSTALL_DIR)/$(TARGET_IMAGE_NAME_TRX) ]; then \
-		echo "Failed to copy a firmware image. Investigate." && false; \
-	fi
+	find ${OPENWRT_BIN_DIR} -maxdepth 1 -type f | while read fname; do \
+		tfname=`basename $$fname`; \
+		tfname=`echo $$tfname | sed 's/openwrt/debwrt-firmware/'`; \
+		cp -av $$fname $(INSTALL_DIR)/$$tfname; \
+	done
 
 openwrt/deliver/kernel-modules: openwrt/deliver/prepare
 	mkdir -p $(INSTALL_DIR) $(INSTALL_DIR_OPENWRT) $(INSTALL_DIR_OPENWRT_MODULES)
@@ -84,7 +76,7 @@ openwrt/deliver/kernel-modules: openwrt/deliver/prepare
 	find $(OPENWRT_PACKAGE_DIR) -name "kmod-*" | while read fkmod; do \
 	    $(SCRIPT_EXTRACT_KMODPKG) $$fkmod $(INSTALL_DIR_OPENWRT_MODULES) $(TMP_DIR) || true; \
 	done
-	depmod -a -b $(INSTALL_DIR_OPENWRT_MODULES) ${OPENWRT_LINUX_VERSION}
+	PATH="/sbin:/bin:/usr/sbin:/usr/bin" depmod -a -b $(INSTALL_DIR_OPENWRT_MODULES) ${OPENWRT_LINUX_VERSION}
 	tar czf $(INSTALL_DIR)/$(MODULES_TAR_GZ) -C $(INSTALL_DIR_OPENWRT_MODULES) .
 
 openwrt/deliver/kernel-headers: openwrt/deliver/prepare
@@ -93,7 +85,7 @@ openwrt/deliver/kernel-headers: openwrt/deliver/prepare
 	cd $(OPENWRT_LINUX_DIR) && find . -path './include/*' -prune \
 		-o -path './scripts/*' -prune -o -type f \
 		\( -name 'Makefile*' -o -name 'Kconfig*' -o -name 'Kbuild*' -o \
-		-name '*.sh' -o -name '*.pl' -o -name '*.lds' \) \
+		-name '*.sh' -o -name '*.pl' -o -name '*.lds' -o -name '*.symvers' \) \
 		-print | grep -v -e "^./.pc" -v -e "^./.svn" | cpio -pd --preserve-modification-time $(INSTALL_DIR_OPENWRT_HEADERS)/usr/src/linux-headers-${OPENWRT_LINUX_VERSION}
 	cd $(OPENWRT_LINUX_DIR) && cp -a drivers/media/dvb/dvb-core/*.h $(INSTALL_DIR_OPENWRT_HEADERS)/usr/src/linux-headers-${OPENWRT_LINUX_VERSION}/drivers/media/dvb/dvb-core
 	cd $(OPENWRT_LINUX_DIR) && cp -a drivers/media/video/*.h $(INSTALL_DIR_OPENWRT_HEADERS)/usr/src/linux-headers-${OPENWRT_LINUX_VERSION}/drivers/media/video

@@ -1,0 +1,48 @@
+# Used by ifup(8) and ifdown(8). See the interfaces(5) manpage or
+# /usr/share/doc/ifupdown/examples for more information.
+
+auto lo
+iface lo inet loopback
+
+# eth0: port 5 on ethernet switch ( Broadcom 44xx/47xx 10/100BaseT Ethernet - b44 )
+#
+# Note: eth0 is the ethernet device connected to the b44 switch.
+#       The switch creates vlan tags for each seperate configured
+#	vlan. robocfg is used to configure the switch. For security
+#	reasen I would advice not to bind an ip-address to eth0 and
+#	make sure you have no services connect to eth0 and/or 
+#	create proper firewall rules.
+#
+#	eth0 needs to be enabled, otherwise eth0.wan and eth0.lan 
+#	VLAN interfaces will be disabled as well. See 
+#	/etc/init.d/network_switch were eth0 is enabled and the 
+#	switch and VLAN's interfaces are created.
+
+# eth0_wan: vlan #0 on eth0 - ports: 0
+#
+auto eth0_wan
+iface eth0_wan inet static
+    address 192.168.1.1
+    netmask 255.255.255.0
+
+# eth0_lan: vlan #1 on eth0 - ports: 1,2,3,4
+#
+auto eth0_lan
+iface eth0_lan inet static
+    address 192.168.2.1
+    netmask 255.255.255.0
+
+# wlan0: wireless lan interface (Broadcom WLAN - b43)
+#
+auto wlan0
+iface wlan0 inet static
+    address 192.168.3.1
+    netmask 255.255.255.0
+
+# wl0: wireless lan interface (Broadcom WLAN - wl)
+#
+auto wl0
+iface wl0 inet static
+    address 192.168.3.1
+    netmask 255.255.255.0
+
