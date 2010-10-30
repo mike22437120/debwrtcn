@@ -22,66 +22,59 @@ config HAVE_DOT_CONFIG
 config HAS_SUBTARGETS
         bool
 
+source config/target_arch.in
+
 mainmenu "DebWrt Configuration"
 
-#choice
-#        prompt "Target System"
-#        default TARGET_ar71xx
-#
-#config TARGET_ar71xx
-#		bool "Atheros AR71xx/AR7240/AR913x"
-#		default y
-#		select HAS_SUBTARGETS
-#		select DEBWRT_TARGET_ARCH_MIPS
-#		help
-#			Build firmware images for Atheros AR71xx/AR913x based boards.
-#
-#config TARGET_brcm47xx
-#	bool "Broadcom BCM947xx/953xx"
-#	default y
-#	select HAS_SUBTARGETS
-#		select DEBWRT_TARGET_ARCH_MIPSEL
-#    help
-#      Build firmware images for Broadcom based routers
-#      (e.g. Netgear WGT634U, Asus WL-500gd)
-#
-#endchoice
-#
-#choice
-#        prompt "Target Subsytem" if HAS_SUBTARGETS
-#	default TARGET_ar71xx_UBNTRSPRO
-#
-#config TARGET_ar71xx_UBNTRS
-#        bool "Ubiquiti RouterStation"
-#        depends TARGET_ar71xx
-#        help
-#          Package set optimized for the Ubiquiti RouterStation.
-#
-#config TARGET_ar71xx_UBNTRSPRO
-#        bool "Ubiquiti RouterStation Pro"
-#        depends TARGET_ar71xx
-#        help
-#          Package set optimized for the Ubiquiti RouterStation Pro.
-#
-#config TARGET_brcm47xx_Broadcom-b43
-#        bool "Broadcom BCM43xx WiFi (default)"
-#        depends TARGET_brcm47xx
-#        help
-#	      Package set compatible with hardware using Broadcom BCM43xx cards
-#
-#config TARGET_brcm47xx_WGT634U
-#    bool "Netgear WGT634U"
-#    depends TARGET_brcm47xx
-#	help
-#	  Package set compatible with the Netgear WGT634U.
-#
-#endchoice
+choice
+        prompt "Target System"
+        default TARGET_ar71xx
 
-source "config/archs.in"
-source "config/config-target.in"
+config TARGET_ar71xx
+		bool "Atheros AR71xx/AR7240/AR913x"
+		default y
+		select HAS_SUBTARGETS
+		select DEBWRT_TARGET_ARCH_MIPS
+		help
+			Build firmware images for Atheros AR71xx/AR913x based boards.
 
-#source "config/board.in"
-#source "config/sub_board.in"
+config TARGET_brcm47xx
+	bool "Broadcom BCM947xx/953xx"
+	default y
+	select HAS_SUBTARGETS
+		select DEBWRT_TARGET_ARCH_MIPSEL
+    help
+      Build firmware images for Broadcom based routers
+      (e.g. Netgear WGT634U, Asus WL-500gd)
+
+endchoice
+
+choice
+        prompt "Target Subsytem" if HAS_SUBTARGETS
+	default TARGET_ar71xx_UBNTRSPRO
+
+config TARGET_ar71xx_UBNTRS
+        bool "Ubiquiti RouterStation"
+        depends TARGET_ar71xx
+        help
+          Package set optimized for the Ubiquiti RouterStation.
+
+config TARGET_ar71xx_UBNTRSPRO
+        bool "Ubiquiti RouterStation Pro"
+        depends TARGET_ar71xx
+        help
+          Package set optimized for the Ubiquiti RouterStation Pro.
+
+config TARGET_brcm47xx_Broadcom-b43
+        bool "Broadcom BCM43xx WiFi (default)"
+        depends TARGET_brcm47xx
+        help
+	  Package set compatible with hardware using Broadcom BCM43xx cards
+
+endchoice
+
+source "config/board.in"
+source "config/sub_board.in"
 source "config/image_name.in"
 source "config/flash_ip.in"
 
@@ -92,8 +85,8 @@ choice
 config OPENWRT_REVISION_TRUNK
         bool "trunk"
 
-config OPENWRT_REVISION_BACKFIRE
-        bool "backfire"
+config OPENWRT_REVISION_R18829
+        bool "r18829"
 
 endchoice
 
@@ -606,21 +599,6 @@ config PACKAGE_kmod-b43legacy
     help
       Kernel module for Broadcom 43xx-legacy wireless support (mac80211 stack) new
       http://linuxwireless.org/en/users/Drivers/b43
-
-config PACKAGE_kmod-rt2500-pci
-	bool "kmod-rt2500-pci............. Ralink Drivers for RT2x00 cards (RT2500 PCI)"
-	default n 
-	help
-      Ralink Drivers for RT2x00 cards (RT2500 PCI)
-      http://linuxwireless.org/
-
-config PACKAGE_kmod-rt2500-usb
-	bool "kmod-rt2500-usb............. Ralink Drivers for RT2x00 cards (RT2500 USB)"
-	default n
-	help
-	Ralink Drivers for RT2x00 cards (RT2500 USB)
-	http://linuxwireless.org/
-
 endmenu
  
 endmenu
@@ -635,53 +613,9 @@ config CMDLINE
    	  to become ready, before the kernel tries to boot from it.
 
 endmenu
-
-menu "Debian Cross-Compile Environment Configuration"
 	
-config DEBIAN_BUILDENV_REPOSITORY
-	string "Debian Repository"
-	default "http://10.0.2.2:3142/ftp.debian.org/debian"
-	help
-	  Specify the Debian Repository used to set up de Debian Cross-Compile chroot
-	  environment and used to install Debian chroot for the target architecture.
-
-config DEBIAN_BUILDENV_INCLUDE_PACKAGES
-	string "Additional packages"
-	default "file,less,strace"
-	help
-	  Specify a comma seperated list of additional packages to install in the
-	  Debian cross-compile environment. The cross compile environment is a
-	  debootstrapped chrooted Debian sid installation.
-
-config DEBIAN_BUILDENV_QEMU_VERSION
-	string "Qemu version"
-	default "0.12.4"
-	help
-	  At least 0.12.2 is needed for mips targets.
-
-endmenu
-
 menu "Debian Root Filesystem Configuration"
-
-choice
-    prompt "DebWrt Debian Release"
-	default DEBWRT_DEBIAN_RELEASE_SID
-	help
-	  Select the the Debian release for the root filesystem
-
-config DEBWRT_DEBIAN_RELEASE_SID
-    bool
-    prompt "Sid"
-
-config DEBWRT_DEBIAN_RELEASE_LENNY
-    bool
-    prompt "Lenny"
-
-endchoice
-
 endmenu
-
-source "config/debian_release.in"
 
 config OPENWRT_DOWNLOAD_DIR
 	string "Alternate OpenWrt download directory"
