@@ -22,8 +22,6 @@ config HAVE_DOT_CONFIG
 config HAS_SUBTARGETS
         bool
 
-source config/target_arch.in
-
 mainmenu "DebWrt Configuration"
 
 #choice

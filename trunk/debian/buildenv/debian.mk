@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-SB2_ARCH:=$(call qstrip,$(CONFIG_DEBWRT_TARGET_ARCH))
+SB2_ARCH:=$(call qstrip,$(CONFIG_ARCH))
 CHROOT:=sudo chroot $(DEBIAN_BUILD_DIR)
 CHROOT_USER:=$(CHROOT) su - $(USER) -c bash
 SB2:=sudo chroot $(DEBIAN_BUILD_DIR) su - $(USER) -c bash -c "cd $(SB2_ARCH)-lenny && sb2"
