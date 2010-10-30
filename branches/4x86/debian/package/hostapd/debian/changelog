@@ -1,0 +1,5 @@
+hostapd (1.0) stable unstable; urgency=low
+
+  * Initial Release.
+
+ -- Amain (DebWrt.net) <amain@debwrt.net>  Thu, 02 Sep 2010 17:03:58 +0000

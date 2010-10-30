@@ -1,0 +1,8 @@
+config DEBWRT_KERNEL_VERSION
+        string
+		default "default" if DEBWRT_KERNEL_DEFAULT 
+		default "2.6.32"  if DEBWRT_KERNEL_2_6_32
+		default "2.6.31"  if DEBWRT_KERNEL_2_6_31
+		default "2.6.30"  if DEBWRT_KERNEL_2_6_30
+		default "unknown"
+
