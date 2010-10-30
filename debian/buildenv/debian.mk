@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-SB2_ARCH:=$(CONFIG_DEBWRT_TARGET_ARCH)
+SB2_ARCH:=$(call qstrip,$(CONFIG_DEBWRT_TARGET_ARCH))
 CHROOT:=sudo chroot $(DEBIAN_BUILD_DIR)
 CHROOT_USER:=$(CHROOT) su - $(USER) -c bash
 SB2:=sudo chroot $(DEBIAN_BUILD_DIR) su - $(USER) -c bash -c "cd $(SB2_ARCH)-lenny && sb2"
@@ -52,7 +52,8 @@ debian/buildenv/prepare:
 	sudo bash -c "echo debwrt > $(DEBIAN_BUILD_DIR)/etc/debian_chroot"
 	sudo bash -c "echo 0 > /proc/sys/vm/mmap_min_addr" # for ARM targets
 	sudo chroot $(DEBIAN_BUILD_DIR) apt-get update
-	sudo chroot $(DEBIAN_BUILD_DIR) bash -c "export LC_ALL=C; apt-get -y --force-yes install g++-4.3-$(SB2_ARCH)-linux-gnu libc6-dev-$(SB2_ARCH)-cross build-essential debootstrap fakeroot zlib1g-dev qemu-user scratchbox2 dh-make"
+	#sudo chroot $(DEBIAN_BUILD_DIR) bash -c "export LC_ALL=C; apt-get -y --force-yes install g++-4.3-$(SB2_ARCH)-linux-gnu libc6-dev-$(SB2_ARCH)-cross build-essential debootstrap fakeroot zlib1g-dev qemu-user scratchbox2 dh-make"
+	sudo chroot $(DEBIAN_BUILD_DIR) bash -c "export LC_ALL=C; apt-get -y --force-yes install g++-4.3-$(SB2_ARCH)-linux-gnu libc6-dev-$(SB2_ARCH)-cross build-essential debootstrap fakeroot zlib1g-dev scratchbox2 dh-make sudo openssh-client"
 	sudo chroot $(DEBIAN_BUILD_DIR) groupadd -g $(shell id -g) debwrt
 	sudo chroot $(DEBIAN_BUILD_DIR) useradd -g debwrt -s /bin/bash -m -u $(shell id -u) $$USER
 	touch $@
