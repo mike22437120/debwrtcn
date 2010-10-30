@@ -69,7 +69,7 @@ debian/buildenv/qemu-build: debian/buildenv/qemu-prepare
 debian/buildenv/scratchbox-prepare:
 	sudo chroot $(DEBIAN_BUILD_DIR) su - $(USER) -c bash -c "mkdir -p $(SB2_ARCH)-lenny"
 	sudo chroot $(DEBIAN_BUILD_DIR) su - $(USER) -c bash -c "cd $(SB2_ARCH)-lenny && sb2-init -c /usr/local/bin/qemu-$(SB2_ARCH) MIPS \"$(SB2_ARCH)-linux-gnu-gcc\""
-	sudo chroot $(DEBIAN_BUILD_DIR) su - $(USER) -c bash -c "fakeroot /usr/sbin/debootstrap --variant=scratchbox --foreign --arch $(SB2_ARCH) lenny $(SB2_ARCH)-lenny/ $(CONFIG_DEBIAN_BUILDENV_REPOSITORY)"
+	sudo chroot $(DEBIAN_BUILD_DIR) su - $(USER) -c bash -c "fakeroot /usr/sbin/debootstrap --include=file,iputils-ping,netbase,strace,vim,wget,tcpdump --variant=scratchbox --foreign --arch $(SB2_ARCH) lenny $(SB2_ARCH)-lenny/ $(CONFIG_DEBIAN_BUILDENV_REPOSITORY)"
 	sudo chroot $(DEBIAN_BUILD_DIR) su - $(USER) -c bash -c  "cd $(SB2_ARCH)-lenny && sb2 -eR ./debootstrap/debootstrap --second-stage"
 
 debian/buildenv/clean:

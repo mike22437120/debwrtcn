@@ -26,61 +26,64 @@ source config/target_arch.in
 
 mainmenu "DebWrt Configuration"
 
-choice
-        prompt "Target System"
-        default TARGET_ar71xx
+#choice
+#        prompt "Target System"
+#        default TARGET_ar71xx
+#
+#config TARGET_ar71xx
+#		bool "Atheros AR71xx/AR7240/AR913x"
+#		default y
+#		select HAS_SUBTARGETS
+#		select DEBWRT_TARGET_ARCH_MIPS
+#		help
+#			Build firmware images for Atheros AR71xx/AR913x based boards.
+#
+#config TARGET_brcm47xx
+#	bool "Broadcom BCM947xx/953xx"
+#	default y
+#	select HAS_SUBTARGETS
+#		select DEBWRT_TARGET_ARCH_MIPSEL
+#    help
+#      Build firmware images for Broadcom based routers
+#      (e.g. Netgear WGT634U, Asus WL-500gd)
+#
+#endchoice
+#
+#choice
+#        prompt "Target Subsytem" if HAS_SUBTARGETS
+#	default TARGET_ar71xx_UBNTRSPRO
+#
+#config TARGET_ar71xx_UBNTRS
+#        bool "Ubiquiti RouterStation"
+#        depends TARGET_ar71xx
+#        help
+#          Package set optimized for the Ubiquiti RouterStation.
+#
+#config TARGET_ar71xx_UBNTRSPRO
+#        bool "Ubiquiti RouterStation Pro"
+#        depends TARGET_ar71xx
+#        help
+#          Package set optimized for the Ubiquiti RouterStation Pro.
+#
+#config TARGET_brcm47xx_Broadcom-b43
+#        bool "Broadcom BCM43xx WiFi (default)"
+#        depends TARGET_brcm47xx
+#        help
+#	      Package set compatible with hardware using Broadcom BCM43xx cards
+#
+#config TARGET_brcm47xx_WGT634U
+#    bool "Netgear WGT634U"
+#    depends TARGET_brcm47xx
+#	help
+#	  Package set compatible with the Netgear WGT634U.
+#
+#endchoice
 
-config TARGET_ar71xx
-		bool "Atheros AR71xx/AR7240/AR913x"
-		default y
-		select HAS_SUBTARGETS
-		select DEBWRT_TARGET_ARCH_MIPS
-		help
-			Build firmware images for Atheros AR71xx/AR913x based boards.
+source "config/archs.in"
+source "config/config-target.in"
 
-config TARGET_brcm47xx
-	bool "Broadcom BCM947xx/953xx"
-	default y
-	select HAS_SUBTARGETS
-		select DEBWRT_TARGET_ARCH_MIPSEL
-    help
-      Build firmware images for Broadcom based routers
-      (e.g. Netgear WGT634U, Asus WL-500gd)
-
-endchoice
-
-choice
-        prompt "Target Subsytem" if HAS_SUBTARGETS
-	default TARGET_ar71xx_UBNTRSPRO
-
-config TARGET_ar71xx_UBNTRS
-        bool "Ubiquiti RouterStation"
-        depends TARGET_ar71xx
-        help
-          Package set optimized for the Ubiquiti RouterStation.
-
-config TARGET_ar71xx_UBNTRSPRO
-        bool "Ubiquiti RouterStation Pro"
-        depends TARGET_ar71xx
-        help
-          Package set optimized for the Ubiquiti RouterStation Pro.
-
-config TARGET_brcm47xx_Broadcom-b43
-        bool "Broadcom BCM43xx WiFi (default)"
-        depends TARGET_brcm47xx
-        help
-	      Package set compatible with hardware using Broadcom BCM43xx cards
-
-config TARGET_brcm47xx_WGT634U
-    bool "Netgear WGT634U"
-    depends TARGET_brcm47xx
-	help
-	  Package set compatible with the Netgear WGT634U.
-
-endchoice
-
-source "config/board.in"
-source "config/sub_board.in"
+#source "config/board.in"
+#source "config/sub_board.in"
 source "config/image_name.in"
 source "config/flash_ip.in"
 

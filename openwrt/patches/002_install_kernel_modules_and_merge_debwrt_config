@@ -1,17 +1,17 @@
---- include/kernel-defaults.mk.org	2010-01-24 18:54:27.180961698 +0100
-+++ include/kernel-defaults.mk	2010-01-24 18:54:16.741060956 +0100
-@@ -96,7 +96,9 @@
- 	-$(_SINGLE)$(MAKE) $(KERNEL_MAKEOPTS) oldconfig prepare scripts
- endef
+--- include/kernel-defaults.mk.org	2010-05-15 18:32:35.075275795 +0200
++++ include/kernel-defaults.mk	2010-05-15 18:32:04.805270593 +0200
+@@ -98,7 +98,9 @@
  define Kernel/Configure/Default
--	$(LINUX_CONFCMD) > $(LINUX_DIR)/.config.target
-+	# DebWrt: merge our custom config
-+	$(LINUX_CONFCMD) > $(LINUX_DIR)/.config.target.default
+ 	$(LINUX_CONFCMD) > $(LINUX_DIR)/.config.target
+ # copy CONFIG_KERNEL_* settings over to .config.target
+-	awk '/^(#[[:space:]]+)?CONFIG_KERNEL/{sub("CONFIG_KERNEL_","CONFIG_");print}' $(TOPDIR)/.config >> $(LINUX_DIR)/.config.target
++	awk '/^(#[[:space:]]+)?CONFIG_KERNEL/{sub("CONFIG_KERNEL_","CONFIG_");print}' $(TOPDIR)/.config >> $(LINUX_DIR)/.config.target.default
++# DebWrt: merge our custom config
 +	$(SCRIPT_DIR)/kconfig.pl + $(LINUX_DIR)/.config.target.default $(TOPDIR)/.config.debwrt > $(LINUX_DIR)/.config.target
- 	echo "$(if $(CONFIG_KERNEL_KALLSYMS),CONFIG_KALLSYMS=y,# CONFIG_KALLSYMS is not set)" >> $(LINUX_DIR)/.config.target
- 	echo "$(if $(CONFIG_KERNEL_PROFILING),CONFIG_PROFILING=y,# CONFIG_PROFILING is not set)" >> $(LINUX_DIR)/.config.target
- 	echo "$(if $(CONFIG_KERNEL_DEBUG_FS),CONFIG_DEBUG_FS=y,# CONFIG_DEBUG_FS is not set)" >> $(LINUX_DIR)/.config.target
-@@ -114,7 +116,11 @@
+ 	echo "# CONFIG_KALLSYMS_EXTRA_PASS is not set" >> $(LINUX_DIR)/.config.target
+ 	echo "# CONFIG_KALLSYMS_ALL is not set" >> $(LINUX_DIR)/.config.target
+ 	echo "# CONFIG_KPROBES is not set" >> $(LINUX_DIR)/.config.target
+@@ -113,7 +115,11 @@
  
  define Kernel/CompileModules/Default
  	rm -f $(LINUX_DIR)/vmlinux $(LINUX_DIR)/System.map

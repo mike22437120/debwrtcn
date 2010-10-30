@@ -21,3 +21,4 @@ SCRIPT_GET_SVN_REVISION:=$(SCRIPT_DIR)/get_svn_revision.sh
 SCRIPT_KCONFIG:=$(SCRIPT_DIR)/kconfig.pl
 SCRIPT_EXTRACT_KMODPKG:=$(SCRIPT_DIR)/extract_kmodpkg.sh
 SCRIPT_FLASH:=$(SCRIPT_DIR)/flash.sh
+SCRIPT_GET_BOARD:=$(SCRIPT_DIR)/get_sub_board.sh
