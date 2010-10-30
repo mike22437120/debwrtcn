@@ -90,19 +90,20 @@ openwrt/deliver/kernel-modules: openwrt/deliver/prepare
 openwrt/deliver/kernel-headers: openwrt/deliver/prepare
 	mkdir -p $(INSTALL_DIR_OPENWRT_HEADERS)
 	mkdir -p $(INSTALL_DIR_OPENWRT_HEADERS)/usr/src/${OPENWRT_LINUX_VERSION}
-	cd $(OPENWRT_LINUX_DIR)
-	find . -path './include/*' -prune \
+	cd $(OPENWRT_LINUX_DIR) && find . -path './include/*' -prune \
 		-o -path './scripts/*' -prune -o -type f \
 		\( -name 'Makefile*' -o -name 'Kconfig*' -o -name 'Kbuild*' -o \
 		-name '*.sh' -o -name '*.pl' -o -name '*.lds' \) \
-		-print | cpio -pd --preserve-modification-time 
-	cp -a drivers/media/dvb/dvb-core/*.h $(INSTALL_DIR_OPENWRT_HEADERS)/usr/src/${OPENWRT_LINUX_VERSION}/drivers/media/dvb/dvb-core
-	cp -a drivers/media/video/*.h $(INSTALL_DIR_OPENWRT_HEADERS)/usr/src/${OPENWRT_LINUX_VERSION}/drivers/media/video
-	cp -a drivers/media/dvb/frontends/*.h $(INSTALL_DIR_OPENWRT_HEADERS)/usr/src/${OPENWRT_LINUX_VERSION}/drivers/media/dvb/frontends
-	cp -a scripts include $(INSTALL_DIR_OPENWRT_HEADERS)/usr/src/${OPENWRT_LINUX_VERSION}
-	(find arch -name include -type d -print | \
+		-print | grep -v -e "^./.pc" -v -e "^./.svn" | cpio -pd --preserve-modification-time $(INSTALL_DIR_OPENWRT_HEADERS)/usr/src/${OPENWRT_LINUX_VERSION}
+	cd $(OPENWRT_LINUX_DIR) && cp -a drivers/media/dvb/dvb-core/*.h $(INSTALL_DIR_OPENWRT_HEADERS)/usr/src/${OPENWRT_LINUX_VERSION}/drivers/media/dvb/dvb-core
+	cd $(OPENWRT_LINUX_DIR) && cp -a drivers/media/video/*.h $(INSTALL_DIR_OPENWRT_HEADERS)/usr/src/${OPENWRT_LINUX_VERSION}/drivers/media/video
+	cd $(OPENWRT_LINUX_DIR) && cp -a drivers/media/dvb/frontends/*.h $(INSTALL_DIR_OPENWRT_HEADERS)/usr/src/${OPENWRT_LINUX_VERSION}/drivers/media/dvb/frontends
+	cd $(OPENWRT_LINUX_DIR) && cp -a scripts include $(INSTALL_DIR_OPENWRT_HEADERS)/usr/src/${OPENWRT_LINUX_VERSION}
+	cd $(OPENWRT_LINUX_DIR) && (find arch -name include -type d -print | \
 		xargs -n1 -i: find : -type f) | \
 		cpio -pd --preserve-modification-time $(INSTALL_DIR_OPENWRT_HEADERS)/usr/src/${OPENWRT_LINUX_VERSION}
+	cp ${OPENWRT_LINUX_DIR}/.config $(INSTALL_DIR_OPENWRT_HEADERS)/usr/src/${OPENWRT_LINUX_VERSION}
+	tar czf $(INSTALL_DIR)/$(HEADERS_TAR_GZ) -C $(INSTALL_DIR_OPENWRT_HEADERS) .
 
 openwrt/deliver/packages: openwrt/deliver/prepare
 	mkdir -p $(INSTALL_DIR_OPENWRT_PACKAGES)
