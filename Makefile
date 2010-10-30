@@ -26,27 +26,12 @@ include rules/help.mk
 include config/config.mk
 include openwrt/openwrt.mk
 include openwrt/openwrt-deliver.mk
-include debian/debian.mk
 
 world: .config openwrt/build
 	@echo REVISION=$$REVISION
 	@echo RELEASE=$$RELEASE
 	@echo DEBWRTVERSION=$$DEBWRTVERSION
 	@echo Make DebWrt
-
-update-targets: openwrt/prepare
-	cat $(OPENWRT_BUILD_DIR)/tmp/.config-target.in \
-		|  awk 'BEGIN{ print "# note: this file has been generated" } \
-               /select HAS_SUB/ { print $0; next } \
-               /select[ \t]+[[:lower:]]+/ { print; next } \
-               /select/ {next} \
-               // { print $0 }' \
-        >${TOPDIR}/config/config-target.in
-	cat $(OPENWRT_BUILD_DIR)/target/Config.in | grep -v 'source "tmp/.config-target.in"' >$(TOPDIR)/config/archs.in
-
-board:
-	@echo "Board    :" ${BOARD}
-	@echo "Sub-Board:" ${SUB_BOARD}
 
 flash:
 	cd $(INSTALL_DIR) && $(SCRIPT_FLASH) "$(call qstrip,$(CONFIG_FLASH_IP))" "$(TARGET_IMAGE_NAME)" || echo

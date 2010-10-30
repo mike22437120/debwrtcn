@@ -16,11 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-if [ "" != "$1" ]; then
-	cd $1
-fi
-
-REV=`svnversion . | sed 's/[A-Z]//g' | sed 's/:.*$//'`
+REV="$(svn info | awk '/^Last Changed Rev:/ { print $4 }')"
 REV="${REV:+r$REV}"
 if [ "" == "$REV" ]; then REV="unknown"; fi
+
 echo $REV

@@ -48,11 +48,7 @@ openwrt/download-link: openwrt/checkout
 
 openwrt/patch: openwrt/checkout
 	patch -d $(OPENWRT_BUILD_DIR) -p 0 -N < $(PATCHES_DIR_OPENWRT)/001_disable_all_openwrt_packages
-ifeq ($(IS_OPENWRT_TRUNK),y)
-	patch -d $(OPENWRT_BUILD_DIR) -p 0 -N < $(PATCHES_DIR_OPENWRT)/trunk/002_install_kernel_modules_and_merge_debwrt_config
-else ifeq ($(IS_OPENWRT_BACKFIRE),y)
-	patch -d $(OPENWRT_BUILD_DIR) -p 0 -N < $(PATCHES_DIR_OPENWRT)/backfire/002_install_kernel_modules_and_merge_debwrt_config
-endif
+	patch -d $(OPENWRT_BUILD_DIR) -p 0 -N < $(PATCHES_DIR_OPENWRT)/002_install_kernel_modules_and_merge_debwrt_config
 	#patch -d $(OPENWRT_BUILD_DIR) -p 0 -N < $(PATCHES_DIR_OPENWRT)/003_set_kernel_version
 	patch -d $(OPENWRT_BUILD_DIR) -p 0 -N < $(PATCHES_DIR_OPENWRT)/004_save_environment_variables
 	touch $@
@@ -62,8 +58,6 @@ openwrt/checkout:
 	mkdir -p $(OPENWRT_BUILD_DIR)
 ifeq ($(IS_OPENWRT_TRUNK),y)
 	cd $(OPENWRT_BUILD_DIR) && svn co svn://svn.openwrt.org/openwrt/trunk/ .
-else ifeq ($(IS_OPENWRT_BACKFIRE),y)
-	cd $(OPENWRT_BUILD_DIR) && svn co svn://svn.openwrt.org/openwrt/branches/backfire/ .
 else
 	cd $(OPENWRT_BUILD_DIR) && svn co -r $(OPENWRT_REVISION) svn://svn.openwrt.org/openwrt/trunk/ .
 endif

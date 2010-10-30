@@ -2,7 +2,6 @@ config TARGET_SUB_BOARD
         string
 		default "ubnt-rs" if TARGET_ar71xx_UBNTRS
 		default "ubnt-rspro" if TARGET_ar71xx_UBNTRSPRO
-		default "wgt634u" if TARGET_brcm47xx_WGT634U
 		default "generic"
 
 

@@ -1,6 +1,6 @@
 config OPENWRT_REVISION
         string
 		default "trunk" if OPENWRT_REVISION_TRUNK
-		default "backfire" if OPENWRT_REVISION_BACKFIRE
+		default "r18829" if OPENWRT_REVISION_R18829
 		default "unknown"
 
