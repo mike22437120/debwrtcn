@@ -33,7 +33,7 @@ space:= $(empty) $(empty)
 BOARD:=$(call qstrip,$(CONFIG_TARGET_BOARD))
 
 # Sub board [example: ubnt-rspro]
-SUB_BOARD:=$(call qstrip,$(CONFIG_TARGET_SUB_BOARD))
+SUB_BOARD:=$(shell $(SCRIPT_GET_BOARD) $(TOPDIR)/.config $(BOARD))
 
 # Linux version [2.6.X(.X)]
 LINUX_VERSION:=$(call qstrip,$(CONFIG_DEBWRT_KERNEL_VERSION))
