@@ -92,8 +92,8 @@ choice
 config OPENWRT_REVISION_TRUNK
         bool "trunk"
 
-config OPENWRT_REVISION_R18829
-        bool "r18829"
+config OPENWRT_REVISION_BACKFIRE
+        bool "backfire"
 
 endchoice
 

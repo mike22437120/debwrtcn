@@ -44,6 +44,9 @@ OPENWRT_REVISION:=$(call qstrip,$(CONFIG_OPENWRT_REVISION))
 # OpenWrt Revision is trunk [y or emtpy]
 IS_OPENWRT_TRUNK:=$(call qstrip,$(CONFIG_OPENWRT_REVISION_TRUNK))
 
+# OpenWrt Revision is branch [y or empty]
+IS_OPENWRT_BACKFIRE:=$(call qstrip,$(CONFIG_OPENWRT_REVISION_BACKFIRE))
+
 # Base BuildDir
 BUILD_DIR_BASE:=$(TOPDIR)/build
 
