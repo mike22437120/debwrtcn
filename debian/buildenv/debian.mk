@@ -15,12 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-SB2_ARCH:=$(call qstrip,$(CONFIG_ARCH))
 CHROOT:=sudo chroot $(DEBIAN_BUILD_DIR)
 CHROOT_USER:=$(CHROOT) su - $(USER) -c bash
-SB2:=sudo chroot $(DEBIAN_BUILD_DIR) su - $(USER) -c bash -c "cd $(SB2_ARCH)-lenny && sb2"
-SB2E:=sudo chroot $(DEBIAN_BUILD_DIR) su - $(USER) -c bash -c "cd $(SB2_ARCH)-lenny && sb2 -e"
-SB2EF:=sudo chroot $(DEBIAN_BUILD_DIR) su - $(USER) -c bash -c "cd $(SB2_ARCH)-lenny && sb2 -eR"
+SB2:=sudo chroot $(DEBIAN_BUILD_DIR) su - $(USER) -c bash -c "cd mips-lenny && sb2"
+SB2E:=sudo chroot $(DEBIAN_BUILD_DIR) su - $(USER) -c bash -c "cd mips-lenny && sb2 -e"
+SB2EF:=sudo chroot $(DEBIAN_BUILD_DIR) su - $(USER) -c bash -c "cd mips-lenny && sb2 -eR"
 
 sb2:
 	$(SB2)
@@ -52,8 +51,7 @@ debian/buildenv/prepare:
 	sudo bash -c "echo debwrt > $(DEBIAN_BUILD_DIR)/etc/debian_chroot"
 	sudo bash -c "echo 0 > /proc/sys/vm/mmap_min_addr" # for ARM targets
 	sudo chroot $(DEBIAN_BUILD_DIR) apt-get update
-	#sudo chroot $(DEBIAN_BUILD_DIR) bash -c "export LC_ALL=C; apt-get -y --force-yes install g++-4.3-$(SB2_ARCH)-linux-gnu libc6-dev-$(SB2_ARCH)-cross build-essential debootstrap fakeroot zlib1g-dev qemu-user scratchbox2 dh-make"
-	sudo chroot $(DEBIAN_BUILD_DIR) bash -c "export LC_ALL=C; apt-get -y --force-yes install g++-4.3-$(SB2_ARCH)-linux-gnu libc6-dev-$(SB2_ARCH)-cross build-essential debootstrap fakeroot zlib1g-dev scratchbox2 dh-make sudo openssh-client"
+	sudo chroot $(DEBIAN_BUILD_DIR) bash -c "export LC_ALL=C; apt-get -y --force-yes install g++-4.3-mips-linux-gnu libc6-dev-mips-cross build-essential debootstrap fakeroot zlib1g-dev qemu-user scratchbox2 dh-make"
 	sudo chroot $(DEBIAN_BUILD_DIR) groupadd -g $(shell id -g) debwrt
 	sudo chroot $(DEBIAN_BUILD_DIR) useradd -g debwrt -s /bin/bash -m -u $(shell id -u) $$USER
 	touch $@
@@ -63,21 +61,21 @@ debian/buildenv/qemu-prepare:
 	touch $@
 
 debian/buildenv/qemu-build: debian/buildenv/qemu-prepare
-	sudo chroot $(DEBIAN_BUILD_DIR) bash -c "cd /usr/src/qemu-$(call qstrip,$(CONFIG_DEBIAN_BUILDENV_QEMU_VERSION)) && ./configure --target-list=$(SB2_ARCH)-linux-user && make && make install"
+	sudo chroot $(DEBIAN_BUILD_DIR) bash -c "cd /usr/src/qemu-$(call qstrip,$(CONFIG_DEBIAN_BUILDENV_QEMU_VERSION)) && ./configure --target-list=mips-linux-user && make && make install"
 	touch $@
 
 debian/buildenv/scratchbox-prepare:
-	sudo chroot $(DEBIAN_BUILD_DIR) su - $(USER) -c bash -c "mkdir -p $(SB2_ARCH)-lenny"
-	sudo chroot $(DEBIAN_BUILD_DIR) su - $(USER) -c bash -c "cd $(SB2_ARCH)-lenny && sb2-init -c /usr/local/bin/qemu-$(SB2_ARCH) MIPS \"$(SB2_ARCH)-linux-gnu-gcc\""
-	sudo chroot $(DEBIAN_BUILD_DIR) su - $(USER) -c bash -c "fakeroot /usr/sbin/debootstrap --include=file,iputils-ping,netbase,strace,vim,wget,tcpdump --variant=scratchbox --foreign --arch $(SB2_ARCH) lenny $(SB2_ARCH)-lenny/ $(CONFIG_DEBIAN_BUILDENV_REPOSITORY)"
-	sudo chroot $(DEBIAN_BUILD_DIR) su - $(USER) -c bash -c  "cd $(SB2_ARCH)-lenny && sb2 -eR ./debootstrap/debootstrap --second-stage"
+	sudo chroot $(DEBIAN_BUILD_DIR) su - $(USER) -c bash -c "mkdir -p mips-lenny"
+	sudo chroot $(DEBIAN_BUILD_DIR) su - $(USER) -c bash -c "cd mips-lenny && sb2-init -c /usr/local/bin/qemu-mips MIPS \"mips-linux-gnu-gcc\""
+	sudo chroot $(DEBIAN_BUILD_DIR) su - $(USER) -c bash -c "fakeroot /usr/sbin/debootstrap --variant=scratchbox --foreign --arch mips lenny mips-lenny/ $(CONFIG_DEBIAN_BUILDENV_REPOSITORY)"
+	sudo chroot $(DEBIAN_BUILD_DIR) su - $(USER) -c bash -c  "cd mips-lenny && sb2 -eR ./debootstrap/debootstrap --second-stage"
 
 debian/buildenv/clean:
 	# sudo should not be needed if fakechroot would have worked
 	sudo rm -rf $(DEBIAN_BUILD_DIR)
-	rm -f debian/buildenv/prepare
-	rm -f debian/buildenv/qemu-prepare 
-	rm -f debian/buildenv/qemu-build
+	rm -f debian/buildenv-prepare
+	rm -f debian/qemu-prepare 
+	rm -f debian/qemu-build
 
 .PHONY: debian/clean 
 
