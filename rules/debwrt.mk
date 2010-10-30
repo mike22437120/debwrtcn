@@ -23,6 +23,9 @@ SVN_REVISION:=$(shell $(SCRIPT_GET_SVN_REVISION))
 DEBWRTVERSION:=$(RELEASE) - $(VERSION) - [ $(RELEASE_DATE) ($(SVN_REVISION)) ]
 DEBWRT_VERSION:=$(RELEASE)-$(VERSION)
 
+empty:=
+space:= $(empty) $(empty)
+
 # Include DebWrt config
 -include $(TOPDIR)/.config
 
@@ -75,13 +78,20 @@ TARGET_IMAGE_NAME=debwrt-firmware-${BOARD}-${SUB_BOARD}-${OPENWRT_LINUX_VERSION}
 PATCHES_DIR_OPENWRT=$(TOPDIR)/openwrt/patches
 
 # OpenWrt Build (checkout) directory
-OPENWRT_BUILD_DIR:=$(BUILD_DIR_BASE)/openwrt-$(BOARD)-$(OPENWRT_REVISION)-$(LINUX_VERSION)
+OPENWRT_BUILD_DIR:=$(BUILD_DIR_BASE)/openwrt-$(BOARD)-$(SUB_BOARD)-$(OPENWRT_REVISION)-$(LINUX_VERSION)
 
 # Special saved environment variables during OpenWrt's build process
 OPENWRT_SAVE_CONFIG_FILE:=$(OPENWRT_BUILD_DIR)/.openwrt_env
 
 # Alternate OpenWrt download directory
 OPENWRT_DOWNLOAD_DIR:=$(call qstrip,$(CONFIG_OPENWRT_DOWNLOAD_DIR))
+
+# Debian build environment version
+DEBIAN_BUILD_VERSION:=sid
+
+# Debian
+DEBIAN_BUILD_DIR:=$(BUILD_DIR_BASE)/debian-$(BOARD)-$(SUB_BOARD)-$(DEBIAN_BUILD_VERSION)
+
 
 # Export defaults to other Makefiles
 export

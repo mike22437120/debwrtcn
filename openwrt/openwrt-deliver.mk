@@ -60,7 +60,11 @@ openwrt/deliver/check: ${OPENWRT_BIN_DIR} openwrt/deliver/import-config
 
 openwrt/deliver/image: openwrt/deliver/prepare
 	mkdir -p $(INSTALL_DIR)
-	cp -a ${OPENWRT_BIN_DIR}/$(call qstrip,$(CONFIG_OPENWRT_TARGET_IMAGE_NAME)) $(INSTALL_DIR)/$(TARGET_IMAGE_NAME)
+	if  [ "" != $(call qstrip,$(CONFIG_OPENWRT_TARGET_IMAGE_NAME)) ] \
+		cp -a ${OPENWRT_BIN_DIR}/$(call qstrip,$(CONFIG_OPENWRT_TARGET_IMAGE_NAME)) $(INSTALL_DIR)/$(TARGET_IMAGE_NAME) \
+	else  \
+		
+	fi
 
 openwrt/deliver/kernel-modules: openwrt/deliver/prepare
 	mkdir -p $(INSTALL_DIR) $(INSTALL_DIR_OPENWRT) $(INSTALL_DIR_OPENWRT_MODULES)

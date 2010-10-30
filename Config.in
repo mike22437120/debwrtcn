@@ -613,7 +613,32 @@ config CMDLINE
    	  to become ready, before the kernel tries to boot from it.
 
 endmenu
+
+menu "Debian Cross-Compile Environment Configuration"
 	
+config DEBIAN_BUILDENV_REPOSITORY
+	string "Debian Repository"
+	default "http://10.0.2.2:3142/ftp.debian.org/debian"
+	help
+	  Specify the Debian Repository used to set up de Debian Cross-Compile chroot
+	  environment and used to install Debian chroot for the target architecture.
+
+config DEBIAN_BUILDENV_INCLUDE_PACKAGES
+	string "Additional packages"
+	default "file,less,strace"
+	help
+	  Specify a comma seperated list of additional packages to install in the
+	  Debian cross-compile environment. The cross compile environment is a
+	  debootstrapped chrooted Debian sid installation.
+
+config DEBIAN_BUILDENV_QEMU_VERSION
+	string "Qemu version"
+	default "0.12.2"
+	help
+	  At least 0.12.2 is needed for mips targets.
+
+endmenu
+
 menu "Debian Root Filesystem Configuration"
 endmenu
 
