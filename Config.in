@@ -69,7 +69,13 @@ config TARGET_brcm47xx_Broadcom-b43
         bool "Broadcom BCM43xx WiFi (default)"
         depends TARGET_brcm47xx
         help
-	  Package set compatible with hardware using Broadcom BCM43xx cards
+	      Package set compatible with hardware using Broadcom BCM43xx cards
+
+config TARGET_brcm47xx_WGT634U
+    bool "Netgear WGT634U"
+    depends TARGET_brcm47xx
+	help
+	  Package set compatible with the Netgear WGT634U.
 
 endchoice
 
@@ -599,6 +605,21 @@ config PACKAGE_kmod-b43legacy
     help
       Kernel module for Broadcom 43xx-legacy wireless support (mac80211 stack) new
       http://linuxwireless.org/en/users/Drivers/b43
+
+config PACKAGE_kmod-rt2500-pci
+	bool "kmod-rt2500-pci............. Ralink Drivers for RT2x00 cards (RT2500 PCI)"
+	default n 
+	help
+      Ralink Drivers for RT2x00 cards (RT2500 PCI)
+      http://linuxwireless.org/
+
+config PACKAGE_kmod-rt2500-usb
+	bool "kmod-rt2500-usb............. Ralink Drivers for RT2x00 cards (RT2500 USB)"
+	default n
+	help
+	Ralink Drivers for RT2x00 cards (RT2500 USB)
+	http://linuxwireless.org/
+
 endmenu
  
 endmenu
