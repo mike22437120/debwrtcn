@@ -62,17 +62,24 @@ INSTALL_DIR:=$(BIN_DIR)/$(BOARD)-$(DEBWRT_VERSION)-$(LINUX_VERSION)
 # Install dir for OpenWrt binaries
 INSTALL_DIR_OPENWRT:=$(INSTALL_DIR)/openwrt
 
-# Install dir OpenWrt modules
+# Install dir OpenWrt kernel modules
 INSTALL_DIR_OPENWRT_MODULES:=$(INSTALL_DIR_OPENWRT)/modules
 
 # Install dir OpenWrt packages
 INSTALL_DIR_OPENWRT_PACKAGES:=$(INSTALL_DIR_OPENWRT)/packages
 
-# Install dir for Debian binaries and rootfs
+# Install dic OpenWrt kernel headers
+INSTALL_DIR_OPENWRT_HEADERS:=$(INSTALL_DIR_OPENWRT)/headers
+
+# Image file containing OpenWrt kernel modules
 MODULES_TAR_GZ=debwrt-modules-${BOARD}-${SUB_BOARD}-${OPENWRT_LINUX_VERSION}-$(DEBWRT_VERSION).tar.gz
 
+# Image file containing OpenWrt kernel headers
+HEADERS_TAR_GZ=debwrt-headers-${BOARD}-${SUB_BOARD}-${OPENWRT_LINUX_VERSION}-$(DEBWRT_VERSION).tar.gz
+
 # Filename of DebWrt firmware image
-TARGET_IMAGE_NAME=debwrt-firmware-${BOARD}-${SUB_BOARD}-${OPENWRT_LINUX_VERSION}-$(DEBWRT_VERSION).bin
+TARGET_IMAGE_NAME_BIN=debwrt-firmware-${BOARD}-${SUB_BOARD}-${OPENWRT_LINUX_VERSION}-$(DEBWRT_VERSION).bin
+TARGET_IMAGE_NAME_TRX=debwrt-firmware-${BOARD}-${SUB_BOARD}-${OPENWRT_LINUX_VERSION}-$(DEBWRT_VERSION).trx
 
 # OpenWrt patches directory
 PATCHES_DIR_OPENWRT=$(TOPDIR)/openwrt/patches

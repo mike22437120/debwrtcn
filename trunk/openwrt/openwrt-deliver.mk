@@ -28,9 +28,10 @@
 
 ERROR_MSG_NOCONF:=" not defined. Make sure OpenWrt build finished."
 
-openwrt/deliver: openwrt/deliver/prepare  openwrt/deliver/clean 			\
-				 openwrt/deliver/image 	  openwrt/deliver/kernel-modules	\
-				 openwrt/deliver/packages openwrt/deliver/config
+openwrt/deliver: openwrt/deliver/prepare        openwrt/deliver/clean 			\
+				 openwrt/deliver/image 	        openwrt/deliver/kernel-modules	\
+				 openwrt/deliver/packages       openwrt/deliver/config		    \
+				 openwrt/deliver/kernel-headers
 
 openwrt/deliver/prepare: openwrt/deliver/import-config openwrt/deliver/check
 
@@ -60,10 +61,18 @@ openwrt/deliver/check: ${OPENWRT_BIN_DIR} openwrt/deliver/import-config
 
 openwrt/deliver/image: openwrt/deliver/prepare
 	mkdir -p $(INSTALL_DIR)
-	if  [ "" != $(call qstrip,$(CONFIG_OPENWRT_TARGET_IMAGE_NAME)) ]; then \
-		cp -a ${OPENWRT_BIN_DIR}/$(call qstrip,$(CONFIG_OPENWRT_TARGET_IMAGE_NAME)) $(INSTALL_DIR)/$(TARGET_IMAGE_NAME); \
+	if  [ "unknown" != $(call qstrip,$(CONFIG_OPENWRT_TARGET_IMAGE_NAME_BIN)) ]; then \
+		cp -a ${OPENWRT_BIN_DIR}/$(call qstrip,$(CONFIG_OPENWRT_TARGET_IMAGE_NAME_BIN)) $(INSTALL_DIR)/$(TARGET_IMAGE_NAME_BIN); \
 	else  \
-		echo "TODO: openwrt/deliver/image"; \
+		echo "Failed to copy firmware BIN image. Configure image name in config/image_name.in"; \
+	fi
+	if  [ "unknown" != $(call qstrip,$(CONFIG_OPENWRT_TARGET_IMAGE_NAME_TRX)) ]; then \
+		cp -a ${OPENWRT_BIN_DIR}/$(call qstrip,$(CONFIG_OPENWRT_TARGET_IMAGE_NAME_TRX)) $(INSTALL_DIR)/$(TARGET_IMAGE_NAME_TRX); \
+	else  \
+		echo "Failed to copy firmware TRX image. Configure image name in config/image_name.in"; \
+	fi
+	if [ ! -e $(INSTALL_DIR)/$(TARGET_IMAGE_NAME_BIN) -a ! -e $(INSTALL_DIR)/$(TARGET_IMAGE_NAME_TRX) ]; then \
+		echo "Failed to copy a firmware image. Investigate." && false; \
 	fi
 
 openwrt/deliver/kernel-modules: openwrt/deliver/prepare
@@ -77,6 +86,23 @@ openwrt/deliver/kernel-modules: openwrt/deliver/prepare
 	done
 	depmod -a -b $(INSTALL_DIR_OPENWRT_MODULES) ${OPENWRT_LINUX_VERSION}
 	tar czf $(INSTALL_DIR)/$(MODULES_TAR_GZ) -C $(INSTALL_DIR_OPENWRT_MODULES) .
+
+openwrt/deliver/kernel-headers: openwrt/deliver/prepare
+	mkdir -p $(INSTALL_DIR_OPENWRT_HEADERS)
+	mkdir -p $(INSTALL_DIR_OPENWRT_HEADERS)/usr/src/${OPENWRT_LINUX_VERSION}
+	cd $(OPENWRT_LINUX_DIR)
+	find . -path './include/*' -prune \
+		-o -path './scripts/*' -prune -o -type f \
+		\( -name 'Makefile*' -o -name 'Kconfig*' -o -name 'Kbuild*' -o \
+		-name '*.sh' -o -name '*.pl' -o -name '*.lds' \) \
+		-print | cpio -pd --preserve-modification-time 
+	cp -a drivers/media/dvb/dvb-core/*.h $(INSTALL_DIR_OPENWRT_HEADERS)/usr/src/${OPENWRT_LINUX_VERSION}/drivers/media/dvb/dvb-core
+	cp -a drivers/media/video/*.h $(INSTALL_DIR_OPENWRT_HEADERS)/usr/src/${OPENWRT_LINUX_VERSION}/drivers/media/video
+	cp -a drivers/media/dvb/frontends/*.h $(INSTALL_DIR_OPENWRT_HEADERS)/usr/src/${OPENWRT_LINUX_VERSION}/drivers/media/dvb/frontends
+	cp -a scripts include $(INSTALL_DIR_OPENWRT_HEADERS)/usr/src/${OPENWRT_LINUX_VERSION}
+	(find arch -name include -type d -print | \
+		xargs -n1 -i: find : -type f) | \
+		cpio -pd --preserve-modification-time $(INSTALL_DIR_OPENWRT_HEADERS)/usr/src/${OPENWRT_LINUX_VERSION}
 
 openwrt/deliver/packages: openwrt/deliver/prepare
 	mkdir -p $(INSTALL_DIR_OPENWRT_PACKAGES)
