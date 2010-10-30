@@ -19,8 +19,7 @@
 #
 config OPENWRT_TARGET_IMAGE_NAME
         string
+        default "openwrt-brcm47xx-squashfs.trx" if TARGET_brcm47xx
         default "openwrt-ar71xx-ubnt-rs-squashfs-factory.bin" if TARGET_ar71xx_UBNTRS
         default "openwrt-ar71xx-ubnt-rspro-squashfs-factory.bin" if TARGET_ar71xx_UBNTRSPRO
-        default "openwrt-brcm47xx-squashfs.trx" if TARGET_brcm47xx
         default "unknown"
-

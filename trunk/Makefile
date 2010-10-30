@@ -26,6 +26,7 @@ include rules/help.mk
 include config/config.mk
 include openwrt/openwrt.mk
 include openwrt/openwrt-deliver.mk
+include debian/debian.mk
 
 world: .config openwrt/build
 	@echo REVISION=$$REVISION
