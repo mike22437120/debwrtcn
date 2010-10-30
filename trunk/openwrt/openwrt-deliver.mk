@@ -113,6 +113,8 @@ openwrt/deliver/config: openwrt/deliver/prepare
 	cp ${TOPDIR}/.config $(INSTALL_DIR)/config-debwrt
 	cp ${OPENWRT_BUILD_DIR}/.config $(INSTALL_DIR)/config-openwrt
 	cp ${OPENWRT_LINUX_DIR}/.config $(INSTALL_DIR)/config-kernel-${OPENWRT_LINUX_VERSION}
+	$(SCRIPT_GET_SVN_REVISION) $(OPENWRT_LINUX_DIR) > $(INSTALL_DIR)/openwrt-svn-revision
+	$(SCRIPT_GET_SVN_REVISION) $(TOPDIR) > $(INSTALL_DIR)/debwrt-svn-revision
 
 openwrt/deliver/clean:
 	rm -rf $(INSTALL_DIR)
