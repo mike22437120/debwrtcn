@@ -1,4 +1,11 @@
-#summary One-sentence summary of this page.
+== SVN HTTP Repository Access ==
+ To checkout the DebWrt build environment, use:
+
+  svn co http://debwrtcn.googlecode.com/svn/trunk
+
+ The DebWrt build environment has been developed and tested on Ubuntu. However I do expect  that building on other Linux distributions should work.
+
+ Much more information on using the DebWrt build environment will follow.
 
 == Pre-requisites ==
 
