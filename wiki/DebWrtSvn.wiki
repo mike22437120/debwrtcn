@@ -91,4 +91,4 @@ follow instructions on OpenWrt how to flash the firmware to your specific device
   * make debian/package/all - build all packages
   * make debian/package/XX - build a specific package
   * make debian/package/XX/clean - clean up a specific package
-*note: have a look in the Makefiles, there are a lot more Makefile targets ( pre setup commands ) available doing all kinds of handy stuff.*
+ ==== note: have a look in the Makefiles, there are a lot more Makefile targets ( pre setup commands ) available doing all kinds of handy stuff. ====
