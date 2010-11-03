@@ -73,11 +73,11 @@ follow instructions on OpenWrt how to flash the firmware to your specific device
 /bin/echo "- rm -rf /lib/firmware/*"
 /bin/echo
 }}}
-= Root filesystem image information =
+== Root filesystem image information ==
 
  See DebWrtRootfsImageInformation for default IP address, password, installed packages, etc.
 
-= How to use the Emdebian based cross-compile environment =
+== How to use the Emdebian based cross-compile environment ==
 
   * Preferably compile a kernel first, but this is not necessary
   * Make sure you have full sudo rights, preferably without the need for typing a password
