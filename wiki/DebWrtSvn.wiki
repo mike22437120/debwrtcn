@@ -1,13 +1,52 @@
 #summary One-sentence summary of this page.
 
-= Introduction =
+=Pre-requisites=
 
-Add your content here.
+Kernel:
+make openwrt/all will give a list of dependencies
+Root filesystem & Cross compile environment:
+debootstrap, comes with any Debian or Ubuntu versions
+run as normal user
+gid of the normal user must be >= 1000
+uid of the normal user must be >= 1000
+this normal user must have sudo rights
+debian packages
+subversion
+build-essentails
+fakeroot
+chroot
+Do it all in one turn
 
+make menuconfig
+make V=99
+Detailed build instructions
 
-= Details =
+Kernel compile
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+make menuconfig
+Select your target device type
+And that should be it
+( optional ) make openwrt/menuconfig
+make openwrt/all V=99
+binaries in bin/
+follow instructions on OpenWrt how to flash the firmware to your specific device
+Root filesystem creation: Stage 1
+
+Preferably compile a kernel first, but this is not necessary
+Make sure you have full sudo rights, preferably without the need for typing a password
+All work is done in a chroot jail to prevent messing up the host root filesystem
+make menuconfig
+Select your target device type
+Optional: selection Debian version
+make debian/rootfs
+rootfs in: build/rootfs-<ARCH>-<DEBWRT_RELEASE>-<DEBWRT_VERSION>-<RELEASE>/
+install by copying manually or:
+mount your USB Disk/USB Stick/SD Card/CF Card/IDE/SATA root partition with ext3 on /media/DEBWRT_ROOT
+make debian/rootfs/install
+it will install the rootfs in /media/DEBWRT_ROOT ( an rm -rf is done first! )
+continue with stage 2
+Root filesystem creation: Stage 2
+
+Stage one prepared a filesystem with debootstrap. A DebWrt Debian root filesystem for the selected architecture(mips, mipsel, ...) has been created. It includes a default Debian installation with some important DebWrt cross-compiled packages installed. Flash the device with the appropriate DebWrt kernel. Boot the device. It will boot in 'firstboot' mode. When having a serial port, one will be able to immediately follow progress and see bash starting with some instructions. Otherwise connect to the device using ssh. Basically what needs to be done after logging in, is the debootstrap second stage install, which will install all Debian packages properly. This is a step that can not be done on the build host, because of the architecture mismatch. (I invested a lot of time in QEMU, but QEMU is not reliable for MIPS and MIPSEL. ARM works fine with QEMU )
+
+When using SSH, the post-install instructions will not appear. Therefore see the instructions below which come from debwrt/trunk/debian/rootfs/files/init.d/rcS.firstboot:
