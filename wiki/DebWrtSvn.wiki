@@ -3,7 +3,7 @@
 =Pre-requisites=
 
 Kernel:
-* make openwrt/all will give a list of dependencies
+  * make openwrt/all will give a list of dependencies
 Root filesystem & Cross compile environment:
 debootstrap, comes with any Debian or Ubuntu versions
 run as normal user
