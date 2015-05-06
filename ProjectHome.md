@@ -1,0 +1,3 @@
+DebWrt 的作者基于非x86，我希望能修改成基于x86的。下面是作者的原介绍。
+
+DebWrt is all about running Debian GNU/Linux on embedded devices, for example wireless routers. DebWrt connects two very powerful technologies: Debian and OpenWrt. Debian has a great package management system and includes thousands of packages for many architectures. OpenWrt has great Linux kernel support for many embedded devices. Bringing these two strengths together opens a whole new world of possibilities. It is greatly underestimated what these embedded devices are capable of. Running Debian on these devices can turn it into something more than it was supposed to be. It is just one apt-get install away.
